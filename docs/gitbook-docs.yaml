@@ -1,12 +1,4 @@
 $schema: https://api.gitbook.com/gitbook-docs.yaml
 site:
   title: WMS
-  structure:
-    - type: space
-      key: space-1
-      title: Centro de Control & Ficha Técnica
-      path: centro-de-control-and-ficha-tecnica
-      default: true
-      draft: true
-      content:
-        directory: ./centro-de-control-and-ficha-tecnica
+  structure: []
