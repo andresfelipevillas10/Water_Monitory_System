@@ -1,11 +1,11 @@
 {
-  "theme": "mint",
+  "theme": "willow",
   "name": "Water Monitoring System",
   "description": "System Used With Monitoring activity of water in region of cundinamarca",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0284C7",
+    "light": "#38BDF8",
+    "dark": "#082F49"
   },
   "logo": {
     "light": "/logo/light.svg",
