@@ -1,106 +1,117 @@
 ---
 title: "Water Monitoring System"
-description: "Solución IoT de Bajo Costo para el Monitoreo Hídrico en la Sabana de Bogotá y Cundinamarca"
+description: "Dispositivo IoT de Bajo Costo para el Monitoreo Hídrico en la Sabana de Bogotá"
+mode: "wide"
 ---
 
-import { Card, CardGroup, Note, Info } from 'mintlify'
+<div style={{ textAlign: 'center', padding: '3rem 0 1rem' }}>
+  <h1 style={{ fontSize: '2.8rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em' }}>
+    💧 Water Monitoring System
+  </h1>
 
-<div style={{ textAlign: 'center', padding: '2rem 0 1rem' }}>
-  <div style={{ fontSize: '3.5rem' }}>💧</div>
-  <h1 style={{ fontSize: '2.2rem', fontWeight: 800, margin: '0.5rem 0 0.25rem' }}>Water Monitoring System</h1>
-  <p style={{ fontSize: '1.1rem', color: '#6b7280', marginTop: 0 }}>WMSV2 — Solución IoT de Bajo Costo para el Monitoreo Hídrico</p>
+  <p style={{ fontSize: '1.15rem', color: '#6b7280', marginTop: '0.5rem', maxWidth: '600px', margin: '0.75rem auto 0' }}>
+    Un dispositivo IoT de bajo costo para monitorear la disponibilidad hídrica en tiempo real en la región de Cundinamarca.
+  </p>
 </div>
 
-<Info>
-  **Contexto Crítico:** Ante la amenaza inminente del Fenómeno de El Niño en la Sabana de Bogotá y el departamento de Cundinamarca, la evaporación acelerada y el riesgo extremo de desabastecimiento hídrico exigían una respuesta técnica implacable. El **WMSV2** se erigió como la solución definitiva, elegante y precisa a esta crisis.
-</Info>
+---
+
+<div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
+  <div
+    style={{
+background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
+borderRadius: '1.25rem',
+padding: '3.5rem 4rem',
+textAlign: 'center',
+maxWidth: '640px',
+width: '100%',
+boxShadow: '0 8px 32px rgba(22,163,74,0.12)'
+}}
+  >
+    <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>💧🔬</div>
+    <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#15803d', margin: 0 }}>WMS — Prototipo Final v2</p>
+
+    <p style={{ fontSize: '0.9rem', color: '#166534', marginTop: '0.25rem' }}>
+      ESP32 + Raspberry Pi · MQTT · Ubidots · SQLite · IA
+    </p>
+  </div>
+</div>
 
 ---
 
-## La Evolución de la Eficiencia
+## ¿Por qué WMS?
 
-Nuestra segunda versión despuntó como una obra maestra del diseño de hardware. Transformamos el prototipo anterior en una estructura **sumamente compacta** con un enfoque _plug-and-play_ exquisito.
+La Sabana de Bogotá enfrenta una crisis hídrica agravada por el Fenómeno de El Niño. Más de 20 municipios de Cundinamarca están en riesgo extremo de desabastecimiento, y las autoridades carecen de herramientas distribuidas de monitoreo en campo.
 
-Esta innovación garantizó un sistema IoT de bajo costo, inmensamente práctico y efectivo para la protección del recurso hídrico, demostrando la audacia y genialidad de nuestro equipo.
-
-### Desglose Técnico
-
-Las variables fueron monitoreadas con precisión. Cada componente se acopló a la arquitectura de forma cohesiva:
-
-<CardGroup cols={2}>
-  <Card title="Nivel del Agua" icon="ruler">
-    Medido al milímetro mediante el sensor ultrasónico **HC-SR04**.
-  </Card>
-
-  <Card title="Radiación Solar" icon="sun">
-    Capturada con el sensor de luz ambiental **BH1750**.
-  </Card>
-
-  <Card title="Condiciones Meteorológicas" icon="cloud">
-    Temperatura y humedad con **DHT22**, presión atmosférica con **BMP180**.
-  </Card>
-
-  <Card title="Alertas In-Situ" icon="bell">
-    Buzzer y LED RGB para respuesta física inmediata ante eventos críticos.
-  </Card>
-
-  <Card title="Visualización Local" icon="display">
-    Datos proyectados en pantalla **LCD 16x2** interactiva.
-  </Card>
-
-  <Card title="Panel Web Remoto" icon="globe">
-    Dashboard web de alta fluidez accesible desde la red local o hotspot propio.
-  </Card>
-</CardGroup>
-
-### Arquitectura del Sistema
-
-El microcontrolador **ESP32** levanta un servidor web embebido con portal de Login, generando su propio _hotspot_ o anclándose a la red WLAN local. Para evitar desbordamientos del procesador, el equipo implementó **Rutinas de Servicio de Interrupción (ISR)** para capturar la señal ECHO del ultrasónico, manteniendo el resto del procesamiento en un _superloop_ fluido e inquebrantable.
+**WMS es la respuesta técnica:** un sistema autónomo que mide, alerta y reporta variables hídricas en tiempo real, desde el dispositivo en campo hasta la nube.
 
 ---
 
-## 🗂️ Módulos de la Wiki
+## Características
 
-Explora cada detalle de la implementación navegando por los siguientes módulos:
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', margin: '1.5rem 0' }}>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📡</div>
+    <strong style={{ color: '#6ee7b7' }}>Conectividad Dual</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>WLAN local + Ubidots en la nube. Accesible desde cualquier punto de Colombia.</p>
+  </div>
 
-<CardGroup cols={2}>
-  <Card title="01. Contexto y Requisitos" icon="magnifying-glass" href="/modules/01-contexto">
-    Análisis de la problemática hídrica y exigencias del proyecto.
-  </Card>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>⚡</div>
+    <strong style={{ color: '#6ee7b7' }}>Alertas en Tiempo Real</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>Buzzer, LED RGB y LCD integrados. Sin dependencia de red para alertas críticas.</p>
+  </div>
 
-  <Card title="02. Equipo y Contribuciones" icon="users" href="/modules/02-equipo">
-    Los integrantes detrás de esta arquitectura.
-  </Card>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
+    <strong style={{ color: '#6ee7b7' }}>Módulo de IA</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>Predicción de anomalías y recomendaciones sobre datos históricos almacenados en SQLite.</p>
+  </div>
 
-  <Card title="03. Diseño de la Solución" icon="pen-ruler" href="/modules/03-diseno">
-    Arquitectura general, restricciones y modelo de negocio.
-  </Card>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>💰</div>
+    <strong style={{ color: '#6ee7b7' }}>Bajo Costo</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>Componentes accesibles: ESP32, sensores estándar, Raspberry Pi. Sin licencias de software.</p>
+  </div>
 
-  <Card title="04. Hardware" icon="microchip" href="/modules/04-hardware">
-    Esquemáticos, sensores, actuadores y estándares aplicados.
-  </Card>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🌊</div>
+    <strong style={{ color: '#6ee7b7' }}>Multi-sensor</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>Nivel de agua, radiación solar, temperatura, humedad y presión atmosférica en un solo dispositivo.</p>
+  </div>
 
-  <Card title="05. Software y Fusión" icon="code" href="/modules/05-software">
-    Diagramas UML, ISR y lógica de sensores.
-  </Card>
+  <div style={{ border: '1px solid #064e3b', borderRadius: '0.75rem', padding: '1.25rem', background: '#052e16' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🔒</div>
+    <strong style={{ color: '#6ee7b7' }}>Portal Seguro</strong>
+    <p style={{ fontSize: '0.9rem', color: '#a7f3d0', marginTop: '0.25rem' }}>Dashboard web embebido en el ESP32 con autenticación, accesible en campo sin internet.</p>
+  </div>
+</div>
 
-  <Card title="06. Validación" icon="flask" href="/modules/06-validacion">
-    Protocolo de pruebas ejecutadas con éxito rotundo.
-  </Card>
+---
 
-  <Card title="07. Resultados" icon="chart-bar" href="/modules/07-resultados">
-    Datos consolidados, comportamiento del prototipo y video demostrativo.
-  </Card>
+## Índice de Módulos
 
-  <Card title="08. Retos y Conclusiones" icon="flag-checkered" href="/modules/08-retos">
-    Lecciones asimiladas tras la victoria técnica del equipo.
-  </Card>
+| # | Módulo | Descripción |
+| --- | --- | --- |
+| 01 | [Contexto y Requisitos](/modules/01-contexto) | Problemática hídrica y exigencias del reto |
+| 02 | [Equipo y Contribuciones](/modules/02-equipo) | Integrantes y roles del proyecto |
+| 03 | [Diseño de la Solución](/modules/03-diseno) | Arquitectura, restricciones y modelo de negocio |
+| 04 | [Hardware](/modules/04-hardware) | Esquemáticos, sensores y actuadores |
+| 05 | [Software y Fusión](/modules/05-software) | Diagramas UML, ISR y lógica de sensores |
+| 06 | [Validación](/modules/06-validacion) | Protocolo de pruebas del prototipo funcional |
+| 07 | [Resultados](/modules/07-resultados) | Datos consolidados y video demostrativo |
+| 08 | [Retos y Conclusiones](/modules/08-retos) | Lecciones aprendidas y trabajo futuro |
+| 09 | [Uso de IA](/modules/09-ia) | Declaración formal de herramientas de IA usadas |
+| 10 | [Referencias y Anexos](/modules/10-referencias) | Código fuente y bibliografía técnica |
 
-  <Card title="09. Uso de IA" icon="robot" href="/modules/09-ia">
-    Declaración formal de herramientas de asistencia utilizadas.
-  </Card>
+---
 
-  <Card title="10. Referencias y Anexos" icon="book" href="/modules/10-referencias">
-    Código fuente y bibliografía técnica completa.
-  </Card>
-</CardGroup>
+<div style={{ textAlign: 'center', padding: '2rem 0 1rem', borderTop: '1px solid #e5e7eb', marginTop: '2rem' }}>
+  <p style={{ fontSize: '0.95rem', color: '#6b7280', margin: 0 }}>
+    Proyecto desarrollado para el <strong>Challenge #3 — Internet de las Cosas</strong>
+  </p>
+
+  <p style={{ fontSize: '0.9rem', color: '#9ca3af', marginTop: '0.25rem' }}>
+    Universidad de la Sabana · IoT 262 · 2026-2
+  </p>
+</div>
