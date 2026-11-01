@@ -1,0 +1,101 @@
+---
+title: "01. Contexto y Requisitos"
+description: "La crisis climática en Colombia, la pregunta motivadora del proyecto y los criterios de diseño del WMSV2."
+---
+
+## La Crisis Climática en Colombia: El Impacto de El Niño
+
+En el año 2026, Colombia ha enfrentado uno de los escenarios climáticos más graves registrados en las últimas décadas, debido a la confirmación oficial del **Fenómeno de El Niño**. La escasez prolongada de lluvias y las anomalías térmicas han provocado que el agua de los reservorios se evapore a un ritmo acelerado.
+
+Como resultado, cerca de **80 municipios en Cundinamarca** han estado bajo algún tipo de alerta (naranja o roja) en lo que va del año.
+
+<CardGroup cols={2}>
+  <Card title="Déficit Severo de Precipitaciones" icon="cloud-rain">
+    Afectación grave en las cuencas altas abastecedoras de Sabana Centro, con reducciones drásticas en los niveles de los embalses principales durante el primer trimestre.
+  </Card>
+
+  <Card title="Riesgo Territorial Inminente" icon="triangle-exclamation">
+    Más de 60 municipios declarados en riesgo extremo por desabastecimiento hídrico e incendios, cruzando variables atmosféricas e hidráulicas locales.
+  </Card>
+
+  <Card title="Emergencias Ambientales" icon="fire">
+    Múltiples focos de incendios forestales en zonas de reserva (febrero-marzo 2026), agravados por la disminución de la humedad relativa y altas temperaturas.
+  </Card>
+
+  <Card title="Impacto Sistémico y Social" icon="people-group">
+    Racionamientos escalonados obligatorios, amenaza al suministro de agua potable comunitaria, pérdidas en agricultura y riesgos para la salud pública.
+  </Card>
+</CardGroup>
+
+---
+
+## Pregunta Motivadora
+
+Con todo lo anterior, se planteó la siguiente pregunta guía del proyecto:
+
+<Info>
+  ¿Cómo diseñar un sistema embebido de bajo costo que monitoree el nivel de agua y variables ambientales, identifique localmente una posible condición de escasez y emita alertas visuales y sonoras in-situ, adicionalmente de forma local con WLAN, **sin utilizar protocolos de comunicación externos como MQTT**?
+</Info>
+
+---
+
+## Criterios de Diseño y Operación
+
+El WMS se rige por los siguientes criterios, respaldados por estándares de ingeniería:
+
+<AccordionGroup>
+  <Accordion title="🔌 Plug and Play" icon="plug">
+    El dispositivo no requiere configuraciones complejas. Está diseñado para ser intuitivo, con un mínimo esfuerzo técnico, sin configuraciones de red tediosas, accesible para cualquier público incluyendo autoridades ambientales.
+  </Accordion>
+
+  <Accordion title="🔔 Notificación In-Situ" icon="bell">
+    Las limitaciones de conexión inalámbrica en zonas rurales no son un problema. Ante una emergencia, el sistema cuenta con notificaciones físicas (buzzer y LED RGB) y pantalla local para que cualquier persona pueda revisar presencialmente el nivel del agua.
+  </Accordion>
+
+  <Accordion title="📐 Documentación UML" icon="diagram-project">
+    Toda la documentación y diseño del software/hardware sigue este estándar de ingeniería, garantizando que cualquier ingeniero externo pueda entender la arquitectura del sistema.
+  </Accordion>
+
+  <Accordion title="📊 Dashboard Local" icon="chart-line">
+    El servidor web local permite auditar datos, realizar control y tomar decisiones rápidas desde un punto cercano, sin grandes desplazamientos hasta la orilla del reservorio.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Conectividad y Adquisición Concurrente de Datos
+
+### Simulación de la WLAN Autorizada
+
+Para simular de forma efectiva la red WLAN de las autoridades sin depender de infraestructura externa, el **ESP32** opera como un **Punto de Acceso (Hotspot)** local sin conexión a internet.
+
+Cualquier dispositivo móvil o computador se conecta directamente a esta red segura. A través de este enlace se carga la interfaz web, se procesa la autenticación y se accede al tablero de control, garantizando que el tráfico permanezca restringido a las inmediaciones físicas del hardware.
+
+### Captura Eficiente de la Señal ECHO por Interrupción
+
+Para evitar el uso de funciones bloqueantes como `pulseIn()` (que detendrían la CPU e interrumpirían el servidor web local), se implementó la captura del sensor **HC-SR04** mediante interrupciones por cambio de estado (`CHANGE`) en el pin de ECHO:
+
+<Steps>
+  <Step title="Pulso de Trigger">
+    El pin TRIGGER se activa con un pulso rápido de **10 microsegundos** generado en el ciclo secuencial del superloop.
+  </Step>
+  <Step title="Flanco de subida (RISING)">
+    Al iniciar la señal de retorno, la transición a estado alto dispara la ISR, donde se registra el tiempo inicial con `micros()`.
+  </Step>
+  <Step title="Flanco de bajada (FALLING)">
+    Al finalizar la señal, la interrupción se dispara nuevamente para capturar el tiempo final y calcular la diferencia, almacenándola en una variable `volatile`.
+  </Step>
+  <Step title="Procesamiento asíncrono">
+    La conversión a centímetros y las lecturas de BH1750, DHT22 y BMP180 se ejecutan de forma asíncrona en el superloop, permitiendo lecturas concurrentes sin hilos adicionales.
+  </Step>
+</Steps>
+
+### Recuperación y Rearmado del Hardware
+
+Se evaluó detalladamente el hardware de la versión anterior para cumplir con los estándares de esta nueva entrega. Se logró recuperar y reutilizar exitosamente el módulo **ESP32** y los sensores del primer corte, reajustando el conexionado de manera segura bajo el nuevo enfoque compacto.
+
+---
+
+<Note>
+  La bibliografía técnica detallada y todos los documentos de referencia se encuentran en [10. Referencias y Anexos](/modules/10-referencias).
+</Note>
