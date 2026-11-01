@@ -1,6 +1,6 @@
 # Table of contents
 
-* [WMS](README.md)
+* [Welcome](README.md)
 
 ## Getting Started
 

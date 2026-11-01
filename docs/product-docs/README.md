@@ -1,38 +1,30 @@
 ---
 description: >-
-  WMSV3: monitoreo hídrico de bajo costo para apoyar la gestión del riesgo
-  durante El Niño.
+  Everything you need to build, deploy, and manage your projects on the
+  platform.
 icon: hand-wave
 ---
 
-# WMS
+# Welcome
 
-## Water Monitoring System — WMSV3
+Welcome to the platform. These docs cover everything from your first project to advanced workflows — pick a starting point below or ask the Assistant to jump straight to what you need.
 
-WMSV3 es la versión definitiva de nuestro sistema IoT de monitoreo hídrico. Mide condiciones ambientales y niveles de agua para apoyar la detección temprana de escenarios de riesgo asociados al Fenómeno de El Niño.
+<button type="button" class="button primary" data-action="ask" data-icon="gitbook-assistant">Ask a question…</button>
 
-### Características
+<button type="button" class="button secondary" data-action="ask" data-query="How do I deploy my first project" data-icon="rocket-launch">Deploy your first project</button><button type="button" class="button secondary" data-action="ask" data-query="How do I set up a custom domain" data-icon="globe">Set up a custom domain</button><button type="button" class="button secondary" data-action="ask" data-query="How do I invite my team" data-icon="user-group">Invite your team</button>
 
-<table data-card-size="large" data-view="cards"><thead><tr><th></th><th>Característica</th><th>Descripción</th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><h4>💰</h4></td><td><h4>Bajo costo</h4></td><td>Componentes accesibles para facilitar su reproducción y despliegue.</td><td></td></tr><tr><td><h4>🧩</h4></td><td><h4>Fácil de usar</h4></td><td>Visualización local y consulta remota en una arquitectura clara.</td><td></td></tr><tr><td><h4>💡</h4></td><td><h4>Innovador</h4></td><td>Variables ambientales, nivel de agua y análisis de datos.</td><td></td></tr><tr><td><h4>📡</h4></td><td><h4>Conectado</h4></td><td>Mediciones por MQTT para almacenamiento y visualización en la nube.</td><td></td></tr></tbody></table>
+***
 
-### Datos, alertas e inteligencia
+{% hint style="success" icon="sparkles" %}
+**New: scheduled deploys and team-level audit logs.** Schedule deploys for any future date and review every action taken in your workspace.
 
-El ESP32 publica las lecturas mediante MQTT hacia el gateway. La Raspberry Pi ejecuta Mosquitto, conserva los datos en SQLite y sincroniza las métricas con Ubidots.
-
-El software usa interrupciones para medir el pulso `ECHO` del sensor ultrasónico sin bloquear el ciclo principal. Los datos históricos permiten identificar tendencias y apoyar el análisis de anomalías.
-
-{% hint style="warning" %}
-Las alertas indican condiciones que requieren revisión. No sustituyen mediciones oficiales ni decisiones de las autoridades competentes.
+<a href="https://app.gitbook.com/s/euz6U9T9Ui1Un0dUKuuZ/" class="button secondary">See what's new</a>
 {% endhint %}
 
-### Equipo
+## Where to start
 
-<table data-card-size="large" data-view="cards"><thead><tr><th></th><th>Integrante</th><th>Rol</th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><h4>📷</h4></td><td><h4>Nombre del integrante</h4></td><td>Rol y responsabilidad principal.</td><td></td></tr><tr><td><h4>📷</h4></td><td><h4>Nombre del integrante</h4></td><td>Rol y responsabilidad principal.</td><td></td></tr><tr><td><h4>📷</h4></td><td><h4>Nombre del integrante</h4></td><td>Rol y responsabilidad principal.</td><td></td></tr></tbody></table>
+<table data-card-size="large" data-view="cards"><thead><tr><th></th><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><h4><i class="fa-rocket-launch" style="color:$primary;">:rocket-launch:</i></h4></td><td><h4>Getting started</h4></td><td>Set up your account and ship your first project in minutes.</td><td><a href="getting-started/getting-started.md">getting-started.md</a></td></tr><tr><td><h4><i class="fa-book" style="color:$primary;">:book:</i></h4></td><td><h4>Core concepts</h4></td><td>Understand workspaces, projects, and how permissions work.</td><td><a href="core-concepts/core-concepts.md">core-concepts.md</a></td></tr><tr><td><h4><i class="fa-graduation-cap" style="color:$primary;">:graduation-cap:</i></h4></td><td><h4>Guides</h4></td><td>Walkthroughs for common tasks like custom domains and automations.</td><td><a href="guides/guides.md">guides.md</a></td></tr><tr><td><h4><i class="fa-book-open" style="color:$primary;">:book-open:</i></h4></td><td><h4>Reference</h4></td><td>Detailed configuration options, limits, and terminology.</td><td><a href="reference/reference.md">reference.md</a></td></tr></tbody></table>
 
-> Reemplaza cada espacio con una foto, el nombre y el rol correspondiente.
+## Popular tasks
 
-### Mapa de la documentación
-
-<table data-card-size="large" data-view="cards"><thead><tr><th></th><th>Sección</th><th>Contenido</th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><h4>00</h4></td><td><h4>Presentación</h4></td><td>Contexto, equipo y navegación del proyecto.</td><td></td></tr><tr><td><h4>01</h4></td><td><h4>Contexto y requisitos</h4></td><td>Problema hídrico, alcance y criterios de diseño.</td><td></td></tr><tr><td><h4>02</h4></td><td><h4>Diseño de la solución</h4></td><td>Arquitectura, modelo de negocio y restricciones.</td><td></td></tr><tr><td><h4>03</h4></td><td><h4>Implementación de hardware</h4></td><td>Esquemáticos, sensores e integración física.</td><td></td></tr><tr><td><h4>04</h4></td><td><h4>Implementación de software</h4></td><td>Diagramas, firmware y comunicación MQTT.</td><td></td></tr><tr><td><h4>05</h4></td><td><h4>Configuración y pruebas</h4></td><td>Protocolo experimental y validación del sistema.</td><td></td></tr><tr><td><h4>06</h4></td><td><h4>Resultados y análisis</h4></td><td>Visualización de datos y demostración del proyecto.</td><td></td></tr><tr><td><h4>07</h4></td><td><h4>Retos y conclusiones</h4></td><td>Aprendizajes, limitaciones y trabajo futuro.</td><td></td></tr><tr><td><h4>08</h4></td><td><h4>Inteligencia artificial</h4></td><td>Metodología, análisis y validación de la IA.</td><td></td></tr><tr><td><h4>09</h4></td><td><h4>Referencias y anexos</h4></td><td>Código fuente, referencias y recursos complementarios.</td><td></td></tr></tbody></table>
-
-> Añade el enlace interno de cada tarjeta cuando su página esté creada.
+<table data-view="cards"><thead><tr><th></th><th data-type="content-ref"></th><th data-type="content-ref"></th><th data-type="content-ref"></th></tr></thead><tbody><tr><td><h4>For builders</h4></td><td><a href="getting-started/quickstart.md">quickstart.md</a></td><td><a href="getting-started/your-first-project.md">your-first-project.md</a></td><td><a href="guides/custom-domains.md">custom-domains.md</a></td></tr><tr><td><h4>For admins</h4></td><td><a href="core-concepts/permissions.md">permissions.md</a></td><td><a href="reference/configuration.md">configuration.md</a></td><td><a href="core-concepts/workspaces-and-projects.md">workspaces-and-projects.md</a></td></tr><tr><td><h4>For developers</h4></td><td><a href="guides/automations.md">automations.md</a></td><td><a href="reference/glossary.md">glossary.md</a></td><td><a href="reference/configuration.md">configuration.md</a></td></tr></tbody></table>
