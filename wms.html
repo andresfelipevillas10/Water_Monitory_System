@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="es" class="dark"><head><script>window.STANDALONE_MODE = "3d";</script><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIwMTgwOTA4NDI4MDEwMTgyNzAzOSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzA3ZThjMWMzMTJhZGFmNjRfaW5kZXguaHRtbC0zNjMifSwiZXhwIjoxNzkzNTczNDUyLCJpYXQiOjE3OTM1Njk4NTIsImFsZyI6IlJTMjU2In0.fVx9v--LgdvPazkLy_cAcA8Xs30q9hsl_lp0Ty-KfC1k_vVvWwVOjmrqUa5Z0mqJt9UPbX3Cro4FV6rN4jP-2g1rnU7MgSLUBQMoNg5LjpDLRthcFc-raWNNyYw1z-rE67ye05m-xLhUztEsZZlQqhNciXcJcL-tufAtJ_mPNOdGWg7otGewQxL3AcyiBpmAo4hxfvWhhKeSB2ZP7JlxkJAxFnz5krPmCVd8MrfKibhzyfC6fppQJm-OOhfrGfpjm3HZPBe0Mea2n4mKvAP_dNqxWMF4D_i5xQ22FteNT_Z3pyp2jqUgqBxs_OPhxSu6e3GIbeT2trmZAPrnwyJV2w","c_07e8c1c312adaf64_index.html-363")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function() {
+  function normalizeSlug(str) {
+    try {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^p{L}p{N}s_-]/gu, '')
+        .replace(/s+/g, '-');
+    } catch (e) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9s_-]/g, '')
+        .replace(/s+/g, '-');
+    }
+  }
+
+  function findTargetElement(hash) {
+    if (!hash || hash === '#') {
+      return null;
+    }
+    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
+    let decodedId = rawId;
+    try {
+      decodedId = decodeURIComponent(rawId);
+    } catch (e) {
+      // Ignore URI malformed errors.
+    }
+
+    // 1. Direct ID match (raw and decoded).
+    let target = document.getElementById(rawId) || document.getElementById(decodedId);
+    if (target) {
+      return target;
+    }
+
+    // 2. Name attribute match (<a name="...">).
+    try {
+      if (typeof CSS !== 'undefined' && CSS.escape) {
+        target =
+          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
+          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
+      } else {
+        const namedElements = document.getElementsByName(rawId);
+        if (namedElements && namedElements.length > 0) {
+          return namedElements[0];
+        }
+      }
+    } catch (e) {
+      // Ignore querySelector syntax errors.
+    }
+    if (target) {
+      return target;
+    }
+
+    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
+    const targetSlug = normalizeSlug(decodedId);
+    if (targetSlug) {
+      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        if (normalizeSlug(heading.textContent || '') === targetSlug) {
+          return heading;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
+    if (!anchor) {
+      return;
+    }
+
+    const href = anchor.getAttribute('href');
+    if (
+      !href ||
+      href.trim().toLowerCase().startsWith('javascript:') ||
+      anchor.hasAttribute('download')
+    ) {
+      return;
+    }
+
+    // Check if the link is an in-page hash / anchor link.
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const targetElement = findTargetElement(href);
+      if (targetElement) {
+        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+      return;
+    }
+
+    // Check if the URL has the same origin/pathname but with a hash.
+    try {
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.hash &&
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname
+      ) {
+        event.preventDefault();
+        const targetElement = findTargetElement(url.hash);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+        return;
+      }
+    } catch (e) {
+      // Fall through if URL parsing fails.
+    }
+
+    // For all external or full navigation links, prevent iframe-level navigation
+    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
+    // safely in a new tab/window.
+    if (anchor.target !== '_blank') {
+      event.preventDefault();
+      window.open(anchor.href, '_blank', 'noopener,noreferrer');
+    }
+  }, {capture: true});
+})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS — Modelo 3D y Plano Técnico 2D</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js r128 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070b12;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 42%, #132036 0%, #070b12 78%);
+            cursor: grab;
+            overflow: hidden;
+        }
+        #canvas-container:active { cursor: grabbing; }
+
+        /* 3D Callout Pins projected in 2D screen space */
+        .pin-3d {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 9999px;
+            background: rgba(14, 165, 233, 0.92);
+            border: 2px solid #ffffff;
+            color: #020617;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            transition: transform 0.15s ease, background-color 0.15s ease;
+            z-index: 15;
+        }
+        .pin-3d:hover, .pin-3d.active {
+            transform: translate(-50%, -50%) scale(1.25);
+            background: #22c55e;
+            color: #020617;
+        }
+
+        /* 2D Blueprint Themes */
+        .bp-dark {
+            --bp-bg: #071324;
+            --bp-panel: #0b1d36;
+            --bp-grid-minor: #153052;
+            --bp-grid-major: #1e426e;
+            --bp-border: #38bdf8;
+            --bp-line: #f1f5f9;
+            --bp-muted: #94a3b8;
+            --bp-accent: #38bdf8;
+            --bp-dim: #7dd3fc;
+        }
+        .bp-light {
+            --bp-bg: #f8fafc;
+            --bp-panel: #ffffff;
+            --bp-grid-minor: #e2e8f0;
+            --bp-grid-major: #cbd5e1;
+            --bp-border: #0284c7;
+            --bp-line: #0f172a;
+            --bp-muted: #475569;
+            --bp-accent: #0369a1;
+            --bp-dim: #0284c7;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-3{bottom:0.75rem}.left-1\/2{left:50%}.left-3{left:0.75rem}.right-3{right:0.75rem}.top-14{top:3.5rem}.top-3{top:0.75rem}.z-20{z-index:20}.z-40{z-index:40}.mx-0\.5{margin-left:0.125rem;margin-right:0.125rem}.mx-1{margin-left:0.25rem;margin-right:0.25rem}.mb-1{margin-bottom:0.25rem}.flex{display:flex}.hidden{display:none}.h-1\.5{height:0.375rem}.h-1\/2{height:50%}.h-2{height:0.5rem}.h-3\.5{height:0.875rem}.h-4{height:1rem}.h-full{height:100%}.h-screen{height:100vh}.max-h-\[850px\]{max-height:850px}.w-2{width:0.5rem}.w-28{width:7rem}.w-3\.5{width:0.875rem}.w-\[1px\]{width:1px}.w-full{width:100%}.w-screen{width:100vw}.max-w-\[1400px\]{max-width:1400px}.max-w-\[290px\]{max-width:290px}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-cyan-500\/30{border-color:rgb(6 182 212 / 0.3)}.border-cyan-500\/40{border-color:rgb(6 182 212 / 0.4)}.border-emerald-500\/30{border-color:rgb(16 185 129 / 0.3)}.border-rose-500\/30{border-color:rgb(244 63 94 / 0.3)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-slate-800\/80{border-color:rgb(30 41 59 / 0.8)}.border-slate-800\/90{border-color:rgb(30 41 59 / 0.9)}.bg-\[\#071324\]{--tw-bg-opacity:1;background-color:rgb(7 19 36 / var(--tw-bg-opacity, 1))}.bg-cyan-500{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.bg-cyan-500\/15{background-color:rgb(6 182 212 / 0.15)}.bg-cyan-500\/20{background-color:rgb(6 182 212 / 0.2)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153 / var(--tw-bg-opacity, 1))}.bg-emerald-500\/15{background-color:rgb(16 185 129 / 0.15)}.bg-emerald-500\/20{background-color:rgb(16 185 129 / 0.2)}.bg-rose-500\/15{background-color:rgb(244 63 94 / 0.15)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-950\/90{background-color:rgb(2 6 23 / 0.9)}.p-0\.5{padding:0.125rem}.p-1\.5{padding:0.375rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.leading-snug{line-height:1.375}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-950{--tw-text-opacity:1;color:rgb(2 6 23 / var(--tw-text-opacity, 1))}.accent-cyan-400{accent-color:#22d3ee}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-cyan-400:hover{--tw-bg-opacity:1;background-color:rgb(34 211 238 / var(--tw-bg-opacity, 1))}.hover\:bg-cyan-500\/25:hover{background-color:rgb(6 182 212 / 0.25)}.hover\:bg-emerald-500\/25:hover{background-color:rgb(16 185 129 / 0.25)}.hover\:bg-rose-500\/25:hover{background-color:rgb(244 63 94 / 0.25)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-800:hover{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}.sm\:w-36{width:9rem}.sm\:p-4{padding:1rem}}@media (min-width: 1024px){.lg\:h-full{height:100%}.lg\:w-1\/2{width:50%}.lg\:flex-row{flex-direction:row}.lg\:border-b-0{border-bottom-width:0px}.lg\:border-r{border-right-width:1px}}</style></head>
+<body class="w-screen h-screen flex flex-col">
+
+    <!-- ========================================================= -->
+    <!-- FLOATING TOP SWITCHER & STANDALONE HTML DOWNLOADER        -->
+    <!-- Auto-hidden when downloaded as standalone 3D or 2D file   -->
+    <!-- ========================================================= -->
+    
+
+    <!-- ========================================================= -->
+    <!-- MAIN WORKSPACE: 3D MODEL PANEL + 2D BLUEPRINT PANEL       -->
+    <!-- ========================================================= -->
+    <main id="main-workspace" class="w-full h-full flex flex-col lg:flex-row overflow-hidden">
+
+        <!-- ===================================================== -->
+        <!-- PANEL 1: PURE INTERACTIVE 3D WMS VIEWER               -->
+        <!-- ===================================================== -->
+        <section id="panel-3d" class="relative w-full h-full flex flex-col overflow-hidden">
+            
+            <!-- 3D WebGL Canvas -->
+            <div id="canvas-container"></div>
+
+            <!-- 3D Numbered Callout Pins Layer -->
+            <div id="pins-container" class="pointer-events-none absolute inset-0 overflow-hidden">
+                <button onclick="selectPin(1)" id="pin-1" class="pin-3d pointer-events-auto" title="1. Pantalla LCD 1602" style="display: flex; left: 464.471px; top: 623.75px;">1</button>
+                <button onclick="selectPin(2)" id="pin-2" class="pin-3d pointer-events-auto active" title="2. Photoresistor LDR" style="display: flex; left: 344.856px; top: 377.778px;">2</button>
+                <button onclick="selectPin(3)" id="pin-3" class="pin-3d pointer-events-auto" title="3. Sensor BMP180" style="display: flex; left: 619.986px; top: 379.204px;">3</button>
+                <button onclick="selectPin(4)" id="pin-4" class="pin-3d pointer-events-auto" title="4. DHT11 + LED Alarma" style="display: flex; left: 834.563px; top: 450.067px;">4</button>
+                <button onclick="selectPin(5)" id="pin-5" class="pin-3d pointer-events-auto" title="5. Ultrasónico HC-SR04" style="display: flex; left: 472.922px; top: 515.616px;">5</button>
+                <button onclick="selectPin(6)" id="pin-6" class="pin-3d pointer-events-auto" title="6. ESP32 DevKit + USB" style="display: flex; left: 153.813px; top: 413.133px;">6</button>
+            </div>
+
+            <!-- Compact Floating Inspector Card (Top-Left of 3D View) -->
+            <div id="pin-info-card" class="absolute top-14 left-3 z-20 max-w-[290px] bg-slate-950/90 backdrop-blur-md border border-cyan-500/40 rounded-xl p-3 shadow-xl pointer-events-auto transition-all">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <span id="pin-title" class="text-xs font-bold text-cyan-300 mono">2. Photoresistor LDR (Sup. Izq.)</span>
+                    <span id="pin-badge" class="text-[10px] mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ADC 86%</span>
+                </div>
+                <p id="pin-desc" class="text-[11px] text-slate-300 leading-snug">Módulo PCB azul con serigrafía "Photoresistor", LED SMD azul y 3 cables (negro, rojo, verde) entrando por la ranura superior.</p>
+            </div>
+
+            <!-- Minimal Floating Bottom HUD Dock (Camera + Water Simulation) -->
+            <div class="absolute bottom-3 left-3 right-3 z-20 flex flex-col gap-2 items-center pointer-events-none">
+                
+                <!-- Water Level / Alarm Inline Simulator Bar -->
+                <div class="bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800/90 flex flex-wrap items-center justify-center gap-3 pointer-events-auto shadow-xl">
+                    <div class="flex items-center gap-1.5 text-xs mono">
+                        <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-400">Dist:</span>
+                        <strong id="hud-dist" class="text-cyan-300">5.7 cm</strong>
+                        <span class="text-slate-600">|</span>
+                        <span class="text-slate-400">Riesgo:</span>
+                        <strong id="hud-risk" class="text-emerald-400">24%</strong>
+                    </div>
+
+                    <input id="sim-slider" type="range" min="5.5" max="14.2" step="0.1" value="5.7" oninput="updateSimulation(this.value)" class="w-28 sm:w-36 accent-cyan-400 h-1.5 bg-slate-800 rounded-lg cursor-pointer" title="Simular nivel de agua y disparo de alarma">
+
+                    <div class="flex items-center gap-1">
+                        <button onclick="setSimPreset(5.7)" class="px-2 py-0.5 rounded text-[11px] mono bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition">24% Verde</button>
+                        <button onclick="setSimPreset(13.9)" class="px-2 py-0.5 rounded text-[11px] mono bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 transition">89% Alarma</button>
+                    </div>
+                </div>
+
+                <!-- Camera Angles & Toggles Pill -->
+                <div class="bg-slate-950/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800/90 flex flex-wrap items-center justify-center gap-1 pointer-events-auto shadow-xl">
+                    <button id="btn-autorotate" onclick="toggleAutoRotate()" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition">360° Auto</button>
+                    <button onclick="setCameraPreset('front')" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition">Frontal</button>
+                    <button onclick="setCameraPreset('top')" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition">Superior</button>
+                    <button onclick="setCameraPreset('right')" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition">Lat. Der</button>
+                    <button onclick="setCameraPreset('bottom')" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition">Inferior</button>
+                    <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+                    <button id="btn-xray" onclick="toggleXRay()" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition">Rayos X</button>
+                    <button id="btn-pins" onclick="togglePins()" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 transition">Pines</button>
+                    <button onclick="capture3DScreenshot()" class="px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition" title="Guardar captura PNG del 3D">📷 PNG</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- PANEL 2: PURE 2D TECHNICAL BLUEPRINT                  -->
+        <!-- ===================================================== -->
+        <section id="panel-2d" class="hidden" style="background-color: rgb(241, 245, 249);">
+            
+            <!-- Scalable Technical Blueprint SVG -->
+            <div class="w-full h-full flex items-center justify-center overflow-auto">
+                <svg id="wms-blueprint-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 850" class="w-full h-full max-w-[1400px] max-h-[850px] select-none bp-light">
+                    <defs>
+                        <pattern id="bp-minor-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--bp-grid-minor)" stroke-width="0.7"></path>
+                        </pattern>
+                        <pattern id="bp-major-grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <rect width="100" height="100" fill="url(#bp-minor-grid)"></rect>
+                            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="var(--bp-grid-major)" stroke-width="1.2"></path>
+                        </pattern>
+                        <marker id="dim-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="var(--bp-dim)"></path>
+                        </marker>
+                    </defs>
+
+                    <!-- Blueprint Sheet Background & Frame -->
+                    <rect width="1400" height="850" fill="var(--bp-bg)"></rect>
+                    <rect x="24" y="24" width="1352" height="802" fill="url(#bp-major-grid)" stroke="var(--bp-border)" stroke-width="2.2"></rect>
+                    <rect x="34" y="34" width="1332" height="782" fill="none" stroke="var(--bp-border)" stroke-width="0.8" stroke-dasharray="6 4"></rect>
+
+                    <!-- Engineering Header Block -->
+                    <g transform="translate(55, 66)">
+                        <text x="0" y="0" fill="var(--bp-accent)" font-family="JetBrains Mono, monospace" font-size="20" font-weight="bold">PLANO TÉCNICO ORTOGRÁFICO — NODO WMS (WATER MONITORING SYSTEM)</text>
+                        <text x="0" y="22" fill="var(--bp-muted)" font-family="JetBrains Mono, monospace" font-size="12">ESCALA 1:1 • UNIDADES: MILÍMETROS (mm) • MICROCONTROLADOR: ESP32 DEVKIT V1 (AP 192.168.4.1)</text>
+                    </g>
+
+                    <!-- =================================================== -->
+                    <!-- 1. VISTA SUPERIOR (PLANTA) - TOP LEFT               -->
+                    <!-- =================================================== -->
+                    <g transform="translate(95, 145)">
+                        <text x="190" y="-16" text-anchor="middle" fill="var(--bp-accent)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="bold">1. VISTA SUPERIOR (PLANTA — 140 x 90 mm)</text>
+
+                        <!-- Box Top Perimeter (380 x 190) -->
+                        <rect x="0" y="0" width="380" height="190" rx="6" fill="var(--bp-panel)" stroke="var(--bp-line)" stroke-width="2.2"></rect>
+                        <line x1="14" y1="0" x2="14" y2="190" stroke="var(--bp-muted)" stroke-width="1" stroke-dasharray="5 4"></line>
+                        <line x1="366" y1="0" x2="366" y2="190" stroke="var(--bp-muted)" stroke-width="1" stroke-dasharray="5 4"></line>
+
+                        <!-- Left Module: Photoresistor (LDR) Blue PCB -->
+                        <rect x="88" y="42" width="68" height="88" rx="4" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"></rect>
+                        <text x="101" y="92" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="8" transform="rotate(-90 101,92)">Photoresistor</text>
+                        <!-- LDR Sensor Head -->
+                        <circle cx="124" cy="70" r="12" fill="#e2e8f0" stroke="#38bdf8" stroke-width="1.5"></circle>
+                        <path d="M 117 70 Q 124 63 131 70 Q 124 77 117 70" fill="none" stroke="#ef4444" stroke-width="1.4"></path>
+                        <!-- Glowing Blue LED -->
+                        <circle cx="138" cy="92" r="5" fill="#00f0ff"></circle>
+                        <!-- Black Tape & 3 Wires (Black, Red, Green) entering slot -->
+                        <rect x="106" y="114" width="34" height="22" fill="#0f172a" stroke="#475569"></rect>
+                        <line x1="115" y1="136" x2="115" y2="165" stroke="#334155" stroke-width="3.5"></line>
+                        <line x1="123" y1="136" x2="123" y2="165" stroke="#ef4444" stroke-width="3.5"></line>
+                        <line x1="131" y1="136" x2="131" y2="165" stroke="#22c55e" stroke-width="3.5"></line>
+                        <rect x="108" y="162" width="30" height="8" rx="2" fill="#020617" stroke="#64748b"></rect>
+
+                        <!-- Right Module: BMP180 Barometric Sensor -->
+                        <rect x="230" y="38" width="78" height="84" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="2"></rect>
+                        <rect x="246" y="54" width="40" height="40" rx="3" fill="#0f172a" stroke="#64748b" stroke-width="1.5"></rect>
+                        <circle cx="266" cy="74" r="12" fill="#334155" stroke="#cbd5e1"></circle>
+                        <!-- Orange SMD LED -->
+                        <circle cx="240" cy="46" r="5.5" fill="#fb923c"></circle>
+                        <!-- White 4-pin Connector on Right Edge -->
+                        <rect x="296" y="54" width="18" height="38" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"></rect>
+                        <!-- Jumper wires going to right side -->
+                        <path d="M 314 64 C 345 64, 360 72, 386 84" fill="none" stroke="#10b981" stroke-width="2.5"></path>
+                        <path d="M 314 78 C 345 78, 360 86, 386 94" fill="none" stroke="#3b82f6" stroke-width="2.5"></path>
+
+                        <!-- Right Side Mounted DHT11 + Dome LED in Top Profile -->
+                        <rect x="380" y="55" width="12" height="80" fill="#1e3a8a" stroke="#60a5fa"></rect>
+                        <rect x="392" y="82" width="20" height="32" fill="#0284c7" stroke="#7dd3fc"></rect>
+                        <path d="M 392 62 L 414 62 A 10 10 0 0 1 414 80 L 392 80 Z" fill="#ef4444" stroke="#fca5a5" stroke-width="1.5"></path>
+
+                        <!-- Leader Callouts -->
+                        <line x1="122" y1="42" x2="90" y2="15" stroke="var(--bp-dim)" stroke-width="1.2"></line>
+                        <text x="15" y="13" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">[2] LDR Photoresistor (ADC 86%)</text>
+
+                        <line x1="266" y1="38" x2="290" y2="15" stroke="var(--bp-dim)" stroke-width="1.2"></line>
+                        <text x="225" y="13" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">[3] BMP180 (754.1 hPa)</text>
+
+                        <!-- Dimension 90 mm -->
+                        <line x1="-22" y1="0" x2="-22" y2="190" stroke="var(--bp-dim)" stroke-width="1.2" marker-start="url(#dim-arrow)" marker-end="url(#dim-arrow)"></line>
+                        <text x="-30" y="95" text-anchor="middle" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" transform="rotate(-90 -30,95)">90 mm</text>
+                    </g>
+
+                    <!-- =================================================== -->
+                    <!-- 2. VISTA FRONTAL (ALZADO) - BOTTOM LEFT             -->
+                    <!-- =================================================== -->
+                    <g transform="translate(95, 420)">
+                        <text x="190" y="-22" text-anchor="middle" fill="var(--bp-accent)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="bold">2. VISTA FRONTAL (ALZADO — PANTALLA LCD 1602)</text>
+
+                        <!-- Top Sensors Profile -->
+                        <rect x="88" y="-12" width="68" height="12" fill="#1d4ed8" stroke="#60a5fa"></rect>
+                        <circle cx="124" cy="-15" r="4.5" fill="#00f0ff"></circle>
+                        <rect x="230" y="-14" width="78" height="14" fill="#1e293b" stroke="#94a3b8"></rect>
+                        <circle cx="240" cy="-17" r="4.5" fill="#fb923c"></circle>
+
+                        <!-- Front Box Body (380 x 210) -->
+                        <rect x="0" y="0" width="380" height="210" rx="6" fill="var(--bp-panel)" stroke="var(--bp-line)" stroke-width="2.4"></rect>
+                        <line x1="14" y1="0" x2="14" y2="210" stroke="var(--bp-muted)" stroke-width="1.2" stroke-dasharray="6 3"></line>
+                        <line x1="366" y1="0" x2="366" y2="210" stroke="var(--bp-muted)" stroke-width="1.2" stroke-dasharray="6 3"></line>
+
+                        <!-- LCD 1602 Module (80 x 36 mm scaled) -->
+                        <rect x="65" y="55" width="250" height="105" rx="5" fill="#090d16" stroke="#64748b" stroke-width="2"></rect>
+                        <rect x="79" y="69" width="222" height="77" rx="3" fill="#0066dd" stroke="#38bdf8" stroke-width="2"></rect>
+                        <text x="96" y="102" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="22" font-weight="bold" letter-spacing="1.5">Dist: 5.7 cm</text>
+                        <text x="96" y="133" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="22" font-weight="bold" letter-spacing="1.5">Riesgo: 24%</text>
+
+                        <!-- Left Side USB Power Cable -->
+                        <rect x="-26" y="64" width="26" height="20" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"></rect>
+                        <path d="M -26 74 Q -58 78 -62 175 Q -64 235 -66 285" fill="none" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"></path>
+                        <text x="-30" y="52" text-anchor="end" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">[6] USB 5V</text>
+
+                        <!-- Right Side Mounted DHT11 + Dome Alarm LED -->
+                        <rect x="380" y="24" width="12" height="110" fill="#1e3a8a" stroke="#60a5fa"></rect>
+                        <rect x="392" y="32" width="14" height="24" fill="#be123c"></rect>
+                        <path d="M 406 33 L 424 33 A 11 11 0 0 1 424 55 L 406 55 Z" fill="#22c55e" stroke="#86efac" stroke-width="2"></path>
+                        <rect x="392" y="68" width="24" height="54" rx="2" fill="#0284c7" stroke="#7dd3fc" stroke-width="1.5"></rect>
+                        <circle cx="398" cy="92" r="4" fill="#00f0ff"></circle>
+
+                        <!-- Bottom HC-SR04 Ultrasonic Cylinders -->
+                        <rect x="136" y="210" width="108" height="7" fill="#1d4ed8" stroke="#60a5fa"></rect>
+                        <rect x="148" y="217" width="28" height="20" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"></rect>
+                        <rect x="204" y="217" width="28" height="20" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"></rect>
+
+                        <!-- Acoustic Waves & Water Container -->
+                        <path d="M 164 248 Q 190 260 216 248" fill="none" stroke="var(--bp-dim)" stroke-width="1.6" stroke-dasharray="4 3"></path>
+                        <path d="M 152 262 Q 190 276 228 262" fill="none" stroke="var(--bp-dim)" stroke-width="1.6" stroke-dasharray="4 3"></path>
+                        <path d="M 55 275 L 72 355 L 308 355 L 325 275 Z" fill="rgba(14, 165, 233, 0.12)" stroke="var(--bp-muted)" stroke-width="2"></path>
+                        <path d="M 64 308 L 72 353 L 308 353 L 316 308 Z" fill="rgba(56, 189, 248, 0.35)" stroke="var(--bp-border)" stroke-width="1.6"></path>
+                        <text x="190" y="336" text-anchor="middle" fill="var(--bp-line)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">CONTENEDOR DE AGUA (5.7 cm a 13.9 cm)</text>
+
+                        <!-- Dimensions 140 mm x 85 mm -->
+                        <line x1="0" y1="252" x2="380" y2="252" stroke="var(--bp-dim)" stroke-width="1.2" marker-start="url(#dim-arrow)" marker-end="url(#dim-arrow)"></line>
+                        <text x="190" y="247" text-anchor="middle" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">140 mm (14.0 cm)</text>
+
+                        <line x1="-22" y1="0" x2="-22" y2="210" stroke="var(--bp-dim)" stroke-width="1.2" marker-start="url(#dim-arrow)" marker-end="url(#dim-arrow)"></line>
+                        <text x="-30" y="105" text-anchor="middle" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" transform="rotate(-90 -30,105)">85 mm</text>
+                    </g>
+
+                    <!-- =================================================== -->
+                    <!-- 3. VISTA LATERAL DERECHA (PERFIL) - TOP RIGHT       -->
+                    <!-- =================================================== -->
+                    <g transform="translate(610, 145)">
+                        <text x="120" y="-16" text-anchor="middle" fill="var(--bp-accent)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="bold">3. VISTA LATERAL DERECHA</text>
+
+                        <!-- Side Wall (210 x 210) -->
+                        <rect x="15" y="0" width="210" height="210" rx="6" fill="var(--bp-panel)" stroke="var(--bp-line)" stroke-width="2.2"></rect>
+
+                        <!-- DHT11 Sensor & Breakout Board -->
+                        <rect x="82" y="65" width="76" height="96" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.8"></rect>
+                        <rect x="92" y="84" width="56" height="68" rx="3" fill="#0284c7" stroke="#7dd3fc" stroke-width="2"></rect>
+                        <line x1="104" y1="90" x2="104" y2="146" stroke="#0369a1" stroke-width="2.2"></line>
+                        <line x1="115" y1="90" x2="115" y2="146" stroke="#0369a1" stroke-width="2.2"></line>
+                        <line x1="126" y1="90" x2="126" y2="146" stroke="#0369a1" stroke-width="2.2"></line>
+                        <line x1="137" y1="90" x2="137" y2="146" stroke="#0369a1" stroke-width="2.2"></line>
+                        <circle cx="120" cy="74" r="4.5" fill="#00f0ff"></circle>
+
+                        <!-- Diffuse Dome Alarm LED Module -->
+                        <rect x="94" y="20" width="52" height="36" rx="3" fill="#881337" stroke="#f43f5e" stroke-width="1.8"></rect>
+                        <circle cx="120" cy="38" r="13" fill="#22c55e" stroke="#bbf7d0" stroke-width="2.2"></circle>
+
+                        <!-- Callouts -->
+                        <line x1="135" y1="38" x2="245" y2="38" stroke="var(--bp-dim)" stroke-width="1.2"></line>
+                        <text x="252" y="34" fill="#22c55e" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">[4A] LED Domo Alarma</text>
+                        <text x="252" y="49" fill="var(--bp-muted)" font-family="Inter, sans-serif" font-size="11">Verde (24%) / Rojo (89%)</text>
+
+                        <line x1="148" y1="115" x2="245" y2="115" stroke="var(--bp-dim)" stroke-width="1.2"></line>
+                        <text x="252" y="111" fill="var(--bp-dim)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="bold">[4B] Sensor DHT11</text>
+                        <text x="252" y="126" fill="var(--bp-muted)" font-family="Inter, sans-serif" font-size="11">22.2 °C | 67% Humedad</text>
+                    </g>
+
+                    <!-- =================================================== -->
+                    <!-- 4. VISTA INFERIOR (HC-SR04) - TOP FAR RIGHT         -->
+                    <!-- =================================================== -->
+                    <g transform="translate(1035, 145)">
+                        <text x="150" y="-16" text-anchor="middle" fill="var(--bp-accent)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="bold">4. VISTA INFERIOR (HC-SR04)</text>
+
+                        <rect x="0" y="0" width="300" height="210" rx="6" fill="var(--bp-panel)" stroke="var(--bp-line)" stroke-width="2.2"></rect>
+                        <rect x="75" y="65" width="150" height="80" rx="4" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"></rect>
+                        <circle cx="115" cy="105" r="26" fill="#cbd5e1" stroke="#475569" stroke-width="2.5"></circle>
+                        <circle cx="115" cy="105" r="18" fill="#334155"></circle>
+                        <circle cx="185" cy="105" r="26" fill="#cbd5e1" stroke="#475569" stroke-width="2.5"></circle>
+                        <circle cx="185" cy="105" r="18" fill="#334155"></circle>
+                        <text x="150" y="82" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="10" font-weight="bold">[5] HC-SR04</text>
+                        <text x="115" y="141" text-anchor="middle" fill="#93c5fd" font-family="JetBrains Mono, monospace" font-size="9">TRIG (T)</text>
+                        <text x="185" y="141" text-anchor="middle" fill="#93c5fd" font-family="JetBrains Mono, monospace" font-size="9">ECHO (R)</text>
+                    </g>
+
+                    <!-- =================================================== -->
+                    <!-- 5. TABLA DE ARQUITECTURA Y PINOUT ESP32 (BOTTOM R)  -->
+                    <!-- =================================================== -->
+                    <g transform="translate(610, 420)">
+                        <rect x="0" y="0" width="725" height="355" rx="8" fill="var(--bp-panel)" stroke="var(--bp-border)" stroke-width="2"></rect>
+                        <rect x="0" y="0" width="725" height="38" rx="6" fill="#0f294a"></rect>
+                        <text x="20" y="24" fill="#38bdf8" font-family="JetBrains Mono, monospace" font-size="13" font-weight="bold">ARQUITECTURA DE HARDWARE Y TELEMETRÍA DEL NODO WMS (ESP32 AP: 192.168.4.1)</text>
+
+                        <g font-family="JetBrains Mono, monospace" font-size="12" fill="var(--bp-line)">
+                            <!-- Header Row -->
+                            <text x="20" y="68" fill="var(--bp-accent)" font-weight="bold">ID  COMPONENTE</text>
+                            <text x="250" y="68" fill="var(--bp-accent)" font-weight="bold">UBICACIÓN FÍSICA</text>
+                            <text x="440" y="68" fill="var(--bp-accent)" font-weight="bold">LECTURA / FUNCIÓN EN SISTEMA</text>
+                            <line x1="20" y1="78" x2="705" y2="78" stroke="var(--bp-grid-major)" stroke-width="1.5"></line>
+
+                            <!-- Row 1 -->
+                            <text x="20" y="108" fill="var(--bp-dim)" font-weight="bold">[1] LCD 1602 (Azul)</text>
+                            <text x="250" y="108">Cara Frontal (80x36mm)</text>
+                            <text x="440" y="108">Muestra "Dist: 5.7 cm" y "Riesgo: 24%"</text>
+
+                            <!-- Row 2 -->
+                            <text x="20" y="148" fill="var(--bp-dim)" font-weight="bold">[2] Photoresistor LDR</text>
+                            <text x="250" y="148">Tapa Superior Izquierda</text>
+                            <text x="440" y="148">Luz relativa: 86% (ADC en rango calibrado)</text>
+
+                            <!-- Row 3 -->
+                            <text x="20" y="188" fill="var(--bp-dim)" font-weight="bold">[3] Sensor BMP180</text>
+                            <text x="250" y="188">Tapa Superior Derecha</text>
+                            <text x="440" y="188">Presión atmosférica: 754.1 hPa (LED Naranja)</text>
+
+                            <!-- Row 4 -->
+                            <text x="20" y="228" fill="var(--bp-dim)" font-weight="bold">[4] DHT11 + LED Alarma</text>
+                            <text x="250" y="228">Cara Lateral Derecha</text>
+                            <text x="440" y="228">22.2 °C | 67% HR + LED Domo Verde/Rojo</text>
+
+                            <!-- Row 5 -->
+                            <text x="20" y="268" fill="var(--bp-dim)" font-weight="bold">[5] Ultrasónico HC-SR04</text>
+                            <text x="250" y="268">Base Inferior (Hacia Agua)</text>
+                            <text x="440" y="268">Distancia superficie: 5.7 cm (24%) a 13.9 cm (89%)</text>
+
+                            <!-- Row 6 -->
+                            <text x="20" y="308" fill="var(--bp-dim)" font-weight="bold">[6] ESP32 DevKit + USB</text>
+                            <text x="250" y="308">Interior + Lat. Izquierdo</text>
+                            <text x="440" y="308">Servidor Web Wi-Fi Local (http://192.168.4.1)</text>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Minimal Floating Bottom Dock for 2D Blueprint -->
+            <div class="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 bg-slate-950/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-xl">
+                <button id="btn-bp-theme" onclick="toggleBlueprintTheme()" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                    ☀️ Fondo Claro / Oscuro
+                </button>
+                <button onclick="downloadBlueprintPNG()" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition">
+                    ⬇ PNG Alta Res
+                </button>
+                <button onclick="downloadBlueprintSVG()" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 transition">
+                    ⬇ SVG
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================================= -->
+    <!-- APPLICATION LOGIC, 3D ENGINE & STANDALONE FILE BUILDER    -->
+    <!-- ========================================================= -->
+    <script>
+        lucide.createIcons();
+
+        // Check if file was generated as standalone 3D or 2D, or via URL params (?view=3d | ?view=2d | ?embed=true)
+        const urlParams = new URLSearchParams(window.location.search);
+        const forcedMode = window.STANDALONE_MODE || urlParams.get('view');
+        const isEmbed = urlParams.get('embed') === 'true' || Boolean(window.STANDALONE_MODE);
+
+        // Component metadata for the 6 interactive 3D pins
+        const PIN_DATA = {
+            1: {
+                title: '1. Pantalla LCD 1602 (Frontal)',
+                badge: 'I2C / 5V',
+                desc: 'Muestra en tiempo real la distancia medida por el sensor ultrasónico (Dist: 5.7 cm) y el riesgo calculado (Riesgo: 24% a 89%).',
+                preset: 'front',
+                pos3D: new THREE.Vector3(0, 1.3, 3.6)
+            },
+            2: {
+                title: '2. Photoresistor LDR (Sup. Izq.)',
+                badge: 'ADC 86%',
+                desc: 'Módulo PCB azul con serigrafía "Photoresistor", LED SMD azul y 3 cables (negro, rojo, verde) entrando por la ranura superior.',
+                preset: 'top',
+                pos3D: new THREE.Vector3(-2.1, 5.4, 0.35)
+            },
+            3: {
+                title: '3. Sensor BMP180 (Sup. Der.)',
+                badge: '754.1 hPa',
+                desc: 'Módulo de presión atmosférica con LED SMD naranja encendido y conector blanco lateral de 4 pines.',
+                preset: 'top',
+                pos3D: new THREE.Vector3(2.4, 5.4, 0.15)
+            },
+            4: {
+                title: '4. DHT11 + LED Domo Alarma (Der.)',
+                badge: '22.2°C • 67%',
+                desc: 'Sensor de temperatura y humedad celeste junto al LED domo difuso que cambia de Verde (Estable) a Rojo (Alarma >80%).',
+                preset: 'right',
+                pos3D: new THREE.Vector3(6.8, 2.5, 0.2)
+            },
+            5: {
+                title: '5. Ultrasónico HC-SR04 (Inferior)',
+                badge: 'Trig / Echo',
+                desc: 'Dos cilindros transductores metálicos orientados hacia abajo midiendo la distancia a la superficie del agua.',
+                preset: 'bottom',
+                pos3D: new THREE.Vector3(0, -2.5, 0.5)
+            },
+            6: {
+                title: '6. ESP32 DevKit + Cable USB (Int/Izq)',
+                badge: '192.168.4.1',
+                desc: 'Microcontrolador interno alimentado por el cable USB blanco izquierdo. Sirve el panel web local del WMS.',
+                preset: 'iso',
+                pos3D: new THREE.Vector3(-6.2, 2.2, 0)
+            }
+        };
+
+        // Three.js Globals
+        let scene, camera, renderer;
+        let wmsGroup, boxMesh, frontLcdGroup, topModulesGroup, rightModulesGroup, bottomSensorGroup, usbCableGroup, interiorGroup;
+        let waterMesh, lcdCanvas, lcdCtx, lcdTexture;
+        let statusLedMesh, statusLedLight, statusLedGlowSprite;
+        let ultrasonicRings = [];
+
+        // Camera Orbit State
+        let isDragging = false;
+        let prevMouse = { x: 0, y: 0 };
+        let spherical = {
+            radius: 25,
+            theta: 0.52,
+            phi: 1.15,
+            targetTheta: 0.52,
+            targetPhi: 1.15,
+            targetRadius: 25
+        };
+        let cameraTarget = new THREE.Vector3(0, -0.5, 0);
+        let desiredCameraTarget = new THREE.Vector3(0, -0.5, 0);
+
+        let autoRotate = true;
+        let isXRay = false;
+        let showPins = true;
+        let isBlueprintLight = false;
+
+        // Create LCD 1602 Canvas Texture
+        function createLCDTexture() {
+            lcdCanvas = document.createElement('canvas');
+            lcdCanvas.width = 512;
+            lcdCanvas.height = 192;
+            lcdCtx = lcdCanvas.getContext('2d');
+            lcdTexture = new THREE.CanvasTexture(lcdCanvas);
+            lcdTexture.minFilter = THREE.LinearFilter;
+            updateLCDCanvas(5.7, 24);
+            return lcdTexture;
+        }
+
+        function updateLCDCanvas(dist, risk) {
+            if (!lcdCtx) return;
+            const grad = lcdCtx.createLinearGradient(0, 0, 512, 192);
+            grad.addColorStop(0, '#0055ff');
+            grad.addColorStop(0.5, '#0088ff');
+            grad.addColorStop(1, '#0050ee');
+            lcdCtx.fillStyle = grad;
+            lcdCtx.fillRect(0, 0, 512, 192);
+
+            lcdCtx.fillStyle = 'rgba(0, 25, 90, 0.22)';
+            for (let r = 0; r < 2; r++) {
+                for (let c = 0; c < 16; c++) {
+                    lcdCtx.fillRect(24 + c * 28.5, 26 + r * 76, 24, 62);
+                }
+            }
+
+            lcdCtx.save();
+            lcdCtx.font = 'bold 46px "JetBrains Mono", monospace';
+            lcdCtx.fillStyle = '#e0faff';
+            lcdCtx.shadowColor = '#7dd3fc';
+            lcdCtx.shadowBlur = 8;
+            lcdCtx.fillText(`Dist: ${Number(dist).toFixed(1)} cm`, 26, 74);
+            lcdCtx.fillText(`Riesgo: ${risk}%`, 26, 150);
+            lcdCtx.restore();
+
+            if (lcdTexture) lcdTexture.needsUpdate = true;
+        }
+
+        function createLDRTexture() {
+            const c = document.createElement('canvas');
+            c.width = 256;
+            c.height = 320;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#153e90';
+            ctx.fillRect(0, 0, 256, 320);
+
+            ctx.save();
+            ctx.translate(42, 220);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 26px "Inter", sans-serif';
+            ctx.fillText('Photoresistor', 0, 0);
+            ctx.restore();
+
+            ctx.strokeStyle = '#60a5fa';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(85, 110, 86, 95);
+            return new THREE.CanvasTexture(c);
+        }
+
+        function createCardboardTexture() {
+            const c = document.createElement('canvas');
+            c.width = 512;
+            c.height = 512;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#d2c4ac';
+            ctx.fillRect(0, 0, 512, 512);
+
+            for (let i = 0; i < 5000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(60,45,30,0.04)';
+                ctx.fillRect(Math.random() * 512, Math.random() * 512, 3, 3);
+            }
+
+            ctx.strokeStyle = 'rgba(50, 38, 24, 0.45)';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(22, 0); ctx.lineTo(22, 512);
+            ctx.moveTo(490, 0); ctx.lineTo(490, 512);
+            ctx.stroke();
+
+            return new THREE.CanvasTexture(c);
+        }
+
+        function createGlowSprite(hexColor, size = 2.5) {
+            const c = document.createElement('canvas');
+            c.width = 128;
+            c.height = 128;
+            const ctx = c.getContext('2d');
+            const grad = ctx.createRadialGradient(64, 64, 4, 64, 64, 60);
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.25, hexColor);
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 128, 128);
+
+            const mat = new THREE.SpriteMaterial({
+                map: new THREE.CanvasTexture(c),
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(size, size, 1);
+            return sprite;
+        }
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+            const w = container.clientWidth || 600;
+            const h = container.clientHeight || 600;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 200);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.innerHTML = '';
+            container.appendChild(renderer.domElement);
+
+            // Subtle technical floor grid
+            const gridHelper = new THREE.GridHelper(36, 36, 0x1e3a5f, 0x0f1f38);
+            gridHelper.position.y = -7.2;
+            scene.add(gridHelper);
+
+            scene.add(new THREE.AmbientLight(0xdbeafe, 0.8));
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+            dirLight1.position.set(15, 22, 18);
+            scene.add(dirLight1);
+
+            const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.35);
+            dirLight2.position.set(-18, -10, -14);
+            scene.add(dirLight2);
+
+            wmsGroup = new THREE.Group();
+            scene.add(wmsGroup);
+
+            // 1. Cardboard Chassis Box
+            const boxGeo = new THREE.BoxGeometry(12, 6.8, 6.4);
+            boxMesh = new THREE.Mesh(boxGeo, new THREE.MeshStandardMaterial({
+                map: createCardboardTexture(),
+                roughness: 0.82,
+                metalness: 0.05
+            }));
+            boxMesh.position.set(0, 1.5, 0);
+            wmsGroup.add(boxMesh);
+
+            boxMesh.add(new THREE.LineSegments(
+                new THREE.EdgesGeometry(boxGeo),
+                new THREE.LineBasicMaterial({ color: 0x475569, transparent: true, opacity: 0.45 })
+            ));
+
+            // Side Flaps
+            const flapGeo = new THREE.BoxGeometry(0.18, 6.85, 6.48);
+            const flapMat = new THREE.MeshStandardMaterial({ color: 0xb8a68a, roughness: 0.9 });
+            const leftFlap = new THREE.Mesh(flapGeo, flapMat);
+            leftFlap.position.set(-6.02, 0, 0);
+            boxMesh.add(leftFlap);
+            const rightFlap = new THREE.Mesh(flapGeo, flapMat);
+            rightFlap.position.set(6.02, 0, 0);
+            boxMesh.add(rightFlap);
+
+            // 2. Front Face: LCD 1602
+            frontLcdGroup = new THREE.Group();
+            frontLcdGroup.position.set(0, 1.3, 3.22);
+            wmsGroup.add(frontLcdGroup);
+
+            frontLcdGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(8.1, 3.55, 0.15),
+                new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.8 })
+            ));
+
+            const bezelMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(7.7, 3.2, 0.28),
+                new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.4, metalness: 0.5 })
+            );
+            bezelMesh.position.z = 0.08;
+            frontLcdGroup.add(bezelMesh);
+
+            const screenMesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(6.9, 2.35),
+                new THREE.MeshBasicMaterial({ map: createLCDTexture() })
+            );
+            screenMesh.position.z = 0.23;
+            frontLcdGroup.add(screenMesh);
+
+            // 3. Top Modules: LDR (Left) + BMP180 (Right)
+            topModulesGroup = new THREE.Group();
+            topModulesGroup.position.set(0, 4.92, 0);
+            wmsGroup.add(topModulesGroup);
+
+            const ldrGroup = new THREE.Group();
+            ldrGroup.position.set(-2.1, 0.08, 0.35);
+            topModulesGroup.add(ldrGroup);
+
+            ldrGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(2.1, 0.14, 2.7),
+                new THREE.MeshStandardMaterial({ map: createLDRTexture(), roughness: 0.4 })
+            ));
+
+            const ldrHead = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.32, 0.32, 0.48, 24),
+                new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.3 })
+            );
+            ldrHead.position.set(0, 0.3, -0.3);
+            ldrGroup.add(ldrHead);
+
+            const ldrBlueLed = new THREE.Mesh(
+                new THREE.SphereGeometry(0.14, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0x00f0ff })
+            );
+            ldrBlueLed.position.set(0.42, 0.14, 0.15);
+            ldrGroup.add(ldrBlueLed);
+
+            const ldrBlueGlow = createGlowSprite('#00d8ff', 1.9);
+            ldrBlueGlow.position.set(0.42, 0.25, 0.15);
+            ldrGroup.add(ldrBlueGlow);
+
+            // Black tape & 3 wires entering slot
+            const ldrTape = new THREE.Mesh(
+                new THREE.BoxGeometry(0.95, 0.28, 0.9),
+                new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.9 })
+            );
+            ldrTape.position.set(0, 0.2, 1.05);
+            ldrGroup.add(ldrTape);
+
+            [0x1e293b, 0xef4444, 0x22c55e].forEach((col, idx) => {
+                const offsetX = (idx - 1) * 0.22;
+                const curve = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(offsetX, 0.22, 1.35),
+                    new THREE.Vector3(offsetX, 0.18, 1.85),
+                    new THREE.Vector3(offsetX, -0.35, 1.95)
+                ]);
+                ldrGroup.add(new THREE.Mesh(
+                    new THREE.TubeGeometry(curve, 16, 0.055, 8, false),
+                    new THREE.MeshStandardMaterial({ color: col })
+                ));
+            });
+
+            // BMP180 Right Module
+            const bmpGroup = new THREE.Group();
+            bmpGroup.position.set(2.4, 0.08, 0.15);
+            topModulesGroup.add(bmpGroup);
+
+            bmpGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(2.4, 0.15, 2.5),
+                new THREE.MeshStandardMaterial({ color: 0x17253b, roughness: 0.5 })
+            ));
+
+            const bmpHousing = new THREE.Mesh(
+                new THREE.BoxGeometry(1.35, 0.32, 1.35),
+                new THREE.MeshStandardMaterial({ color: 0x0f172a })
+            );
+            bmpHousing.position.set(-0.1, 0.22, 0);
+            bmpGroup.add(bmpHousing);
+
+            const orangeLed = new THREE.Mesh(
+                new THREE.SphereGeometry(0.14, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0xff8800 })
+            );
+            orangeLed.position.set(-0.88, 0.16, -0.92);
+            bmpGroup.add(orangeLed);
+
+            const orangeGlow = createGlowSprite('#ff7b00', 1.7);
+            orangeGlow.position.set(-0.88, 0.25, -0.92);
+            bmpGroup.add(orangeGlow);
+
+            const jstMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(0.55, 0.38, 1.15),
+                new THREE.MeshStandardMaterial({ color: 0xf8fafc })
+            );
+            jstMesh.position.set(1.05, 0.24, -0.05);
+            bmpGroup.add(jstMesh);
+
+            [0x10b981, 0x3b82f6, 0x111827].forEach((col, i) => {
+                const zOff = (i - 1) * 0.22;
+                const curve = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(1.35, 0.24, zOff),
+                    new THREE.Vector3(2.9, 0.15, zOff),
+                    new THREE.Vector3(3.85, -0.65, zOff)
+                ]);
+                bmpGroup.add(new THREE.Mesh(
+                    new THREE.TubeGeometry(curve, 20, 0.055, 8, false),
+                    new THREE.MeshStandardMaterial({ color: col })
+                ));
+            });
+
+            // 4. Right Side: DHT11 + Protruding Dome Alarm LED
+            rightModulesGroup = new THREE.Group();
+            rightModulesGroup.position.set(6.15, 2.35, 0.2);
+            wmsGroup.add(rightModulesGroup);
+
+            rightModulesGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(0.16, 3.6, 2.2),
+                new THREE.MeshStandardMaterial({ color: 0x1e3a8a })
+            ));
+
+            const dhtHousing = new THREE.Mesh(
+                new THREE.BoxGeometry(0.68, 1.75, 1.35),
+                new THREE.MeshStandardMaterial({ color: 0x0ea5e9, roughness: 0.35 })
+            );
+            dhtHousing.position.set(0.4, -0.65, 0);
+            rightModulesGroup.add(dhtHousing);
+
+            const dhtBlueGlow = createGlowSprite('#00e5ff', 1.5);
+            dhtBlueGlow.position.set(0.25, -0.5, 0.85);
+            rightModulesGroup.add(dhtBlueGlow);
+
+            const alarmPcb = new THREE.Mesh(
+                new THREE.BoxGeometry(1.15, 0.14, 1.15),
+                new THREE.MeshStandardMaterial({ color: 0x881337 })
+            );
+            alarmPcb.position.set(0.65, 1.05, 0);
+            rightModulesGroup.add(alarmPcb);
+
+            const domeGroup = new THREE.Group();
+            domeGroup.position.set(0.95, 1.5, 0);
+            rightModulesGroup.add(domeGroup);
+
+            statusLedMesh = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+            const cylMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.55, 24), statusLedMesh);
+            const capMesh = new THREE.Mesh(new THREE.SphereGeometry(0.38, 24, 16), statusLedMesh);
+            capMesh.position.y = 0.27;
+            domeGroup.add(cylMesh);
+            domeGroup.add(capMesh);
+
+            statusLedGlowSprite = createGlowSprite('#22c55e', 3.2);
+            statusLedGlowSprite.position.set(0, 0.3, 0);
+            domeGroup.add(statusLedGlowSprite);
+
+            statusLedLight = new THREE.PointLight(0x22c55e, 1.2, 8);
+            statusLedLight.position.set(0.5, 0.5, 0);
+            domeGroup.add(statusLedLight);
+
+            // 5. Bottom Face: HC-SR04 Ultrasonic + Water Container
+            bottomSensorGroup = new THREE.Group();
+            bottomSensorGroup.position.set(0, -1.95, 0);
+            wmsGroup.add(bottomSensorGroup);
+
+            bottomSensorGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(3.8, 0.14, 1.7),
+                new THREE.MeshStandardMaterial({ color: 0x1d4ed8 })
+            ));
+
+            [-0.95, 0.95].forEach(xPos => {
+                const cyl = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.65, 0.65, 0.95, 28),
+                    new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.75, roughness: 0.25 })
+                );
+                cyl.position.set(xPos, -0.5, 0);
+                bottomSensorGroup.add(cyl);
+
+                const core = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.48, 0.48, 0.98, 24),
+                    new THREE.MeshStandardMaterial({ color: 0x1e293b })
+                );
+                core.position.set(xPos, -0.5, 0);
+                bottomSensorGroup.add(core);
+            });
+
+            for (let i = 0; i < 3; i++) {
+                const ring = new THREE.Mesh(
+                    new THREE.RingGeometry(0.5, 0.62, 32),
+                    new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide, transparent: true, opacity: 0.6 })
+                );
+                ring.rotation.x = Math.PI / 2;
+                bottomSensorGroup.add(ring);
+                ultrasonicRings.push(ring);
+            }
+
+            const tubGroup = new THREE.Group();
+            tubGroup.position.set(0, -5.8, 0);
+            wmsGroup.add(tubGroup);
+
+            const tubGeo = new THREE.BoxGeometry(10.5, 2.6, 7.2);
+            tubGroup.add(new THREE.Mesh(tubGeo, new THREE.MeshPhysicalMaterial({
+                color: 0xcbd5e1, transparent: true, opacity: 0.2, roughness: 0.2
+            })));
+            tubGroup.add(new THREE.LineSegments(
+                new THREE.EdgesGeometry(tubGeo),
+                new THREE.LineBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.45 })
+            ));
+
+            waterMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(10.1, 1.8, 6.8),
+                new THREE.MeshStandardMaterial({ color: 0x0ea5e9, transparent: true, opacity: 0.55, roughness: 0.15 })
+            );
+            waterMesh.position.y = -0.2;
+            tubGroup.add(waterMesh);
+
+            // 6. Left Side USB Cable + Internal ESP32
+            usbCableGroup = new THREE.Group();
+            usbCableGroup.position.set(-6.1, 2.2, 0);
+            wmsGroup.add(usbCableGroup);
+
+            const plugMesh = new THREE.Mesh(
+                new THREE.BoxGeometry(0.95, 0.52, 0.85),
+                new THREE.MeshStandardMaterial({ color: 0xf8fafc })
+            );
+            plugMesh.position.set(-0.4, 0, 0);
+            usbCableGroup.add(plugMesh);
+
+            const usbCurve = new THREE.CatmullRomCurve3([
+                new THREE.Vector3(-0.8, 0, 0),
+                new THREE.Vector3(-2.1, -0.3, 0),
+                new THREE.Vector3(-2.8, -3.5, 0.2),
+                new THREE.Vector3(-3.1, -7.2, 0.4)
+            ]);
+            usbCableGroup.add(new THREE.Mesh(
+                new THREE.TubeGeometry(usbCurve, 32, 0.16, 12, false),
+                new THREE.MeshStandardMaterial({ color: 0xf1f5f9 })
+            ));
+
+            // Internal ESP32 (Visible in X-Ray mode)
+            interiorGroup = new THREE.Group();
+            interiorGroup.position.set(-1.2, 0.6, -0.4);
+            wmsGroup.add(interiorGroup);
+
+            interiorGroup.add(new THREE.Mesh(
+                new THREE.BoxGeometry(4.8, 0.18, 2.4),
+                new THREE.MeshStandardMaterial({ color: 0x111827 })
+            ));
+            const espShield = new THREE.Mesh(
+                new THREE.BoxGeometry(1.6, 0.28, 1.5),
+                new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.8 })
+            );
+            espShield.position.set(1.1, 0.2, 0);
+            interiorGroup.add(espShield);
+
+            setupInteractionEvents(container);
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function setupInteractionEvents(container) {
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                autoRotate = false;
+                updateAutoRotateUI();
+                prevMouse.x = e.clientX;
+                prevMouse.y = e.clientY;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - prevMouse.x;
+                const dy = e.clientY - prevMouse.y;
+                prevMouse.x = e.clientX;
+                prevMouse.y = e.clientY;
+                spherical.targetTheta -= dx * 0.0085;
+                spherical.targetPhi = Math.max(0.15, Math.min(Math.PI - 0.15, spherical.targetPhi - dy * 0.0085));
+            });
+
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    autoRotate = false;
+                    updateAutoRotateUI();
+                    prevMouse.x = e.touches[0].clientX;
+                    prevMouse.y = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const dx = e.touches[0].clientX - prevMouse.x;
+                const dy = e.touches[0].clientY - prevMouse.y;
+                prevMouse.x = e.touches[0].clientX;
+                prevMouse.y = e.touches[0].clientY;
+                spherical.targetTheta -= dx * 0.0085;
+                spherical.targetPhi = Math.max(0.15, Math.min(Math.PI - 0.15, spherical.targetPhi - dy * 0.0085));
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => { isDragging = false; });
+
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                spherical.targetRadius = Math.max(13, Math.min(40, spherical.targetRadius + e.deltaY * 0.015));
+            }, { passive: false });
+        }
+
+        function update3DPinsProjection() {
+            const container = document.getElementById('canvas-container');
+            if (!container || !camera || !showPins) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+
+            Object.keys(PIN_DATA).forEach(id => {
+                const pinEl = document.getElementById('pin-' + id);
+                if (!pinEl) return;
+                const worldPos = PIN_DATA[id].pos3D.clone();
+                worldPos.project(camera);
+
+                if (worldPos.z > 1) {
+                    pinEl.style.display = 'none';
+                } else {
+                    const x = (worldPos.x * 0.5 + 0.5) * w;
+                    const y = (-(worldPos.y * 0.5) + 0.5) * h;
+                    pinEl.style.display = 'flex';
+                    pinEl.style.left = `${x}px`;
+                    pinEl.style.top = `${y}px`;
+                }
+            });
+        }
+
+        function selectPin(id) {
+            const data = PIN_DATA[id];
+            if (!data) return;
+            document.querySelectorAll('.pin-3d').forEach(p => p.classList.remove('active'));
+            const activePin = document.getElementById('pin-' + id);
+            if (activePin) activePin.classList.add('active');
+
+            document.getElementById('pin-title').textContent = data.title;
+            document.getElementById('pin-badge').textContent = data.badge;
+            document.getElementById('pin-desc').textContent = data.desc;
+
+            if (id === 6 && !isXRay) toggleXRay();
+            setCameraPreset(data.preset);
+        }
+
+        function togglePins() {
+            showPins = !showPins;
+            document.getElementById('pins-container').style.display = showPins ? 'block' : 'none';
+            document.getElementById('pin-info-card').style.display = showPins ? 'block' : 'none';
+            const btn = document.getElementById('btn-pins');
+            btn.className = showPins
+                ? 'px-2 py-1 rounded-lg text-[11px] font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 transition'
+                : 'px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 text-slate-400 border border-slate-800 transition';
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (autoRotate && !isDragging) {
+                spherical.targetTheta += 0.0035;
+            }
+
+            spherical.theta += (spherical.targetTheta - spherical.theta) * 0.09;
+            spherical.phi += (spherical.targetPhi - spherical.phi) * 0.09;
+            spherical.radius += (spherical.targetRadius - spherical.radius) * 0.09;
+            cameraTarget.lerp(desiredCameraTarget, 0.09);
+
+            if (camera) {
+                camera.position.set(
+                    cameraTarget.x + spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta),
+                    cameraTarget.y + spherical.radius * Math.cos(spherical.phi),
+                    cameraTarget.z + spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta)
+                );
+                camera.lookAt(cameraTarget);
+            }
+
+            const time = performance.now() * 0.002;
+            ultrasonicRings.forEach((ring, i) => {
+                const progress = (time + i * 0.33) % 1;
+                ring.position.y = -1.1 - progress * 2.9;
+                const scale = 0.7 + progress * 1.6;
+                ring.scale.set(scale, scale, 1);
+                ring.material.opacity = (1 - progress) * 0.65;
+            });
+
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+                update3DPinsProjection();
+            }
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            if (!container || !renderer || !camera) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            if (w === 0 || h === 0) return;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        }
+
+        function updateSimulation(val) {
+            const dist = parseFloat(val);
+            const t = (dist - 5.7) / (13.9 - 5.7);
+            const risk = Math.round(Math.max(15, Math.min(98, 24 + t * (89 - 24))));
+
+            document.getElementById('hud-dist').textContent = `${dist.toFixed(1)} cm`;
+            const riskEl = document.getElementById('hud-risk');
+            riskEl.textContent = `${risk}%`;
+
+            updateLCDCanvas(dist, risk);
+
+            if (waterMesh) {
+                const waterScaleY = Math.max(0.25, 1.35 - (dist - 5.0) * 0.1);
+                waterMesh.scale.y = waterScaleY;
+                waterMesh.position.y = -1.1 + waterScaleY * 0.85;
+            }
+
+            const isAlarm = risk >= 65;
+            const dot = document.getElementById('status-dot');
+            if (isAlarm) {
+                statusLedMesh.color.setHex(0xff2a2a);
+                statusLedLight.color.setHex(0xff2a2a);
+                if (statusLedGlowSprite) statusLedGlowSprite.material.color.setHex(0xff3333);
+                riskEl.className = 'text-rose-400';
+                dot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
+            } else {
+                statusLedMesh.color.setHex(0x22c55e);
+                statusLedLight.color.setHex(0x22c55e);
+                if (statusLedGlowSprite) statusLedGlowSprite.material.color.setHex(0x22c55e);
+                riskEl.className = 'text-emerald-400';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+            }
+        }
+
+        function setSimPreset(val) {
+            document.getElementById('sim-slider').value = val;
+            updateSimulation(val);
+        }
+
+        function setCameraPreset(preset) {
+            autoRotate = false;
+            updateAutoRotateUI();
+            switch (preset) {
+                case 'front':
+                    spherical.targetTheta = 0; spherical.targetPhi = 1.48; spherical.targetRadius = 21;
+                    desiredCameraTarget.set(0, 0.8, 0); break;
+                case 'top':
+                    spherical.targetTheta = 0.05; spherical.targetPhi = 0.35; spherical.targetRadius = 20;
+                    desiredCameraTarget.set(0, 3.0, 0); break;
+                case 'right':
+                    spherical.targetTheta = 1.42; spherical.targetPhi = 1.38; spherical.targetRadius = 19;
+                    desiredCameraTarget.set(2.5, 1.8, 0); break;
+                case 'bottom':
+                    spherical.targetTheta = 0.35; spherical.targetPhi = 2.05; spherical.targetRadius = 22;
+                    desiredCameraTarget.set(0, -2.5, 0); break;
+                default:
+                    spherical.targetTheta = 0.52; spherical.targetPhi = 1.15; spherical.targetRadius = 25;
+                    desiredCameraTarget.set(0, -0.5, 0);
+            }
+        }
+
+        function toggleAutoRotate() {
+            autoRotate = !autoRotate;
+            updateAutoRotateUI();
+        }
+
+        function updateAutoRotateUI() {
+            const btn = document.getElementById('btn-autorotate');
+            if (!btn) return;
+            btn.className = autoRotate
+                ? 'px-2.5 py-1 rounded-lg text-[11px] font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition'
+                : 'px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 transition';
+        }
+
+        function toggleXRay() {
+            isXRay = !isXRay;
+            if (boxMesh) {
+                boxMesh.material.transparent = isXRay;
+                boxMesh.material.opacity = isXRay ? 0.22 : 1.0;
+                boxMesh.material.needsUpdate = true;
+            }
+            const btn = document.getElementById('btn-xray');
+            btn.className = isXRay
+                ? 'px-2 py-1 rounded-lg text-[11px] font-medium bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 transition'
+                : 'px-2 py-1 rounded-lg text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition';
+        }
+
+        // =====================================================
+        // LAYOUT MODE SWITCHER (3D+2D SPLIT | 3D ONLY | 2D ONLY)
+        // =====================================================
+        function setLayoutMode(mode) {
+            const p3d = document.getElementById('panel-3d');
+            const p2d = document.getElementById('panel-2d');
+            const bSplit = document.getElementById('btn-mode-split');
+            const b3d = document.getElementById('btn-mode-3d');
+            const b2d = document.getElementById('btn-mode-2d');
+
+            const activeCls = 'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition bg-cyan-500 text-slate-950';
+            const inactiveCls = 'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition text-slate-300 hover:text-white';
+
+            if (bSplit) bSplit.className = mode === 'split' ? activeCls : inactiveCls;
+            if (b3d) b3d.className = mode === '3d' ? activeCls : inactiveCls;
+            if (b2d) b2d.className = mode === '2d' ? activeCls : inactiveCls;
+
+            if (mode === '3d') {
+                p3d.className = 'relative w-full h-full flex flex-col overflow-hidden';
+                p2d.className = 'hidden';
+            } else if (mode === '2d') {
+                p3d.className = 'hidden';
+                p2d.className = 'relative w-full h-full bg-[#071324] flex flex-col items-center justify-center overflow-hidden p-2 sm:p-6';
+            } else {
+                p3d.className = 'relative w-full lg:w-1/2 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-800/80 flex flex-col overflow-hidden';
+                p2d.className = 'relative w-full lg:w-1/2 h-1/2 lg:h-full bg-[#071324] flex flex-col items-center justify-center overflow-hidden p-2 sm:p-4';
+            }
+            setTimeout(onWindowResize, 50);
+        }
+
+        // =====================================================
+        // 2D BLUEPRINT THEME & EXPORT FUNCTIONS
+        // =====================================================
+        function toggleBlueprintTheme() {
+            isBlueprintLight = !isBlueprintLight;
+            const svg = document.getElementById('wms-blueprint-svg');
+            const panel2d = document.getElementById('panel-2d');
+            if (isBlueprintLight) {
+                svg.classList.remove('bp-dark');
+                svg.classList.add('bp-light');
+                panel2d.style.backgroundColor = '#f1f5f9';
+            } else {
+                svg.classList.remove('bp-light');
+                svg.classList.add('bp-dark');
+                panel2d.style.backgroundColor = '#071324';
+            }
+        }
+
+        function capture3DScreenshot() {
+            if (!renderer) return;
+            renderer.render(scene, camera);
+            const a = document.createElement('a');
+            a.download = 'wms-3d.png';
+            a.href = renderer.domElement.toDataURL('image/png');
+            a.click();
+        }
+
+        function downloadBlueprintSVG() {
+            const svgEl = document.getElementById('wms-blueprint-svg');
+            const source = new XMLSerializer().serializeToString(svgEl);
+            const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wms-plano-2d.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadBlueprintPNG() {
+            const svgEl = document.getElementById('wms-blueprint-svg');
+            const svgString = new XMLSerializer().serializeToString(svgEl);
+            const url = URL.createObjectURL(new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' }));
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                canvas.width = 2800;
+                canvas.height = 1700;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                URL.revokeObjectURL(url);
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'wms-plano-2d.png';
+                a.click();
+            };
+            img.src = url;
+        }
+
+        // =====================================================
+        // 1-CLICK STANDALONE HTML GENERATOR (wms-3d.html / wms-2d.html)
+        // =====================================================
+        function downloadStandaloneFile(targetMode) {
+            const docClone = document.documentElement.cloneNode(true);
+            // Remove the top switcher bar so the downloaded file is 100% pure embed
+            const switcher = docClone.querySelector('#top-switcher');
+            if (switcher) switcher.remove();
+
+            // Clear dynamic canvas children before serializing
+            const canvasCont = docClone.querySelector('#canvas-container');
+            if (canvasCont) canvasCont.innerHTML = '';
+
+            // Inject standalone mode flag at the top of head
+            const configScript = document.createElement('script');
+            configScript.textContent = `window.STANDALONE_MODE = "${targetMode}";`;
+            docClone.querySelector('head').prepend(configScript);
+
+            const htmlContent = '<!DOCTYPE html>\n' + docClone.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = targetMode === '3d' ? 'wms-3d.html' : 'wms-2d.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        window.onload = function () {
+            if (isEmbed) {
+                const switcher = document.getElementById('top-switcher');
+                if (switcher) switcher.style.display = 'none';
+            }
+            init3D();
+            if (forcedMode === '3d' || forcedMode === '2d') {
+                setLayoutMode(forcedMode);
+            } else {
+                setLayoutMode('split');
+            }
+            animate();
+        };
+    </script>
+
+</body></html>
