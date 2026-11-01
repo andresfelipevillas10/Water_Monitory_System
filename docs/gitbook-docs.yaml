@@ -10,3 +10,10 @@ site:
       draft: true
       content:
         directory: ./centro-de-control-and-ficha-tecnica
+    - type: space
+      key: space-2
+      title: wolfenstein
+      path: wolfenstein
+      draft: true
+      content:
+        directory: ./wolfenstein
