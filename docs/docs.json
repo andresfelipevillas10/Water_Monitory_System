@@ -63,7 +63,9 @@
     "pages": [
       {
         "group": "Getting Started",
-        "pages": []
+        "pages": [
+          "home"
+        ]
       },
       {
         "group": "Módulos",

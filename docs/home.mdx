@@ -1,0 +1,126 @@
+---
+title: "WMS"
+sidebarTitle: "Home"
+description: "Water Monitoring System (WMS) - Sabana Centro: monitoreo hidrometeorológico continuo y de bajo costo con fusión sensorial, telemetría distribuida y soporte de decisiones por IA."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Estado-Prototipo%20Funcional-22c55e?style=for-the-badge" alt="Estado: Prototipo Funcional" />
+
+  <img src="https://img.shields.io/badge/Hardware-ESP32%20%26%20RPi%204-0ea5e9?style=for-the-badge" alt="Hardware: ESP32 & RPi 4" />
+
+  <img src="https://img.shields.io/badge/Red-MQTT%20%26%20WLAN-6366f1?style=for-the-badge" alt="Red: MQTT & WLAN" />
+
+  <img src="https://img.shields.io/badge/Nube-Ubidots-f59e0b?style=for-the-badge" alt="Nube: Ubidots" />
+
+  <img src="https://img.shields.io/badge/Universidad-Sabana%202026--2-64748b?style=for-the-badge" alt="Universidad: Sabana 2026-2" />
+</div>
+
+# Water Monitoring System ◈ Sabana Centro
+
+**Resiliencia hídrica para una región bajo presión climática.** Telemetría distribuida, fusión sensorial e inteligencia artificial al servicio del agua dulce en la Sabana Centro de Cundinamarca.
+
+---
+
+## ⬡ ¿Qué es WMS y por qué es innovador?
+
+WMS es una plataforma de monitoreo hidrometeorológico de bajo costo diseñada para cerrar la brecha de observación en reservorios y fuentes de agua dulce de la Sabana Centro. Ante la intensificación del Fenómeno de El Niño, la región carece de instrumentación densa y asequible que permita anticipar el estrés hídrico. WMS responde con una red de nodos embebidos capaces de adquirir, fusionar y transmitir variables críticas en tiempo casi real.
+
+El sistema combina una **arquitectura dual borde/nube**: el nodo ESP32 ejecuta adquisición no bloqueante bajo FreeRTOS e ISRs, sirve un tablero local por WLAN y aplica lógica de fusión sensorial antes de publicar por MQTT. Un gateway Raspberry Pi concentra la telemetría en un broker Mosquitto con persistencia en SQLite, garantizando operación continua incluso ante cortes de conectividad hacia la nube.
+
+Sobre esa base, WMS integra **inteligencia artificial descentralizada** vía API para análisis predictivo y soporte de racionamiento, transformando datos crudos en decisiones accionables. El resultado es un instrumento replicable, auditable y orientado a la gestión preventiva del recurso hídrico.
+
+<CardGroup cols={3}>
+  <Card title="Fusión Hidrometeorológica" icon="layer-group">
+    Integración de nivel, caudal, radiación y clima en un único modelo de estado coherente, reduciendo el ruido y los falsos positivos de medición.
+  </Card>
+
+  <Card title="Arquitectura Dual (Borde / Nube)" icon="network-wired">
+    Procesamiento en el nodo ESP32 y en el gateway RPi, con redundancia local SQLite que asegura continuidad operativa ante caídas de red.
+  </Card>
+
+  <Card title="Inteligencia Artificial Descentralizada" icon="brain-circuit">
+    Análisis predictivo por API para anticipar escenarios de escasez y recomendar estrategias de racionamiento basadas en evidencia.
+  </Card>
+</CardGroup>
+
+---
+
+## ⚡ System Snapshot
+
+<Info>
+  Ficha técnica resumida del prototipo funcional. Las especificaciones reflejan la configuración de referencia para la Sabana Centro.
+</Info>
+
+| Parámetro | Especificación |
+| --- | --- |
+| **Variables monitoreadas** | Nivel, caudal, radiación solar, temperatura, humedad relativa, presión atmosférica |
+| **Nodo embebido** | ESP32 · FreeRTOS · ISRs · servidor web local |
+| **Gateway local** | Raspberry Pi 4 · broker MQTT Mosquitto · base de datos SQLite |
+| **Protocolos** | MQTT bidireccional · HTTP (tablero local) · WLAN |
+| **Latencia estimada** | ▸ Borde a gateway: \< 2 s · Gateway a nube: \< 10 s |
+| **Redundancia** | Persistencia local SQLite + reenvío en reconexión |
+| **Actuadores** | Alarma sonora/lumínica con apagado remoto (ACK) · pantalla in situ |
+| **Inteligencia** | API de IA para análisis predictivo y soporte de racionamiento |
+
+---
+
+## ◈ Centro de Control & Demostración en Video
+
+<Frame caption="Video de validación (máximo 5 minutos con el equipo)">
+  <img
+    src="https://placehold.co/1280x720/0f172a/e2e8f0?text=Video+de+Validacion+WMS"
+    alt="Placeholder del video de validación"
+  />
+</Frame>
+
+<Tip>
+  Para visualización directa, reemplaza el placeholder por el embed del video. Enlace alternativo: `[INSERTAR_AQUÍ_URL_VIDEO]`
+</Tip>
+
+<CardGroup cols={2}>
+  <Card title="Tablero Local (WLAN)" icon="house-signal" href="[INSERTAR_AQUÍ_IP_LOCAL]">
+    Dashboard servido por el ESP32 en la red local. Acceso in situ sin dependencia de nube.
+  </Card>
+
+  <Card title="Tablero Global (Ubidots Cloud)" icon="cloud" href="[INSERTAR_AQUÍ_URL_UBIDOTS]">
+    Panel de telemetría en la nube con históricos, alertas y visualización remota.
+  </Card>
+</CardGroup>
+
+---
+
+## ⬡ Mapa de Navegación de la Wiki
+
+<Note>
+  Directorio ordenado de los módulos del proyecto. Reemplaza cada ruta `[INSERTAR_AQUÍ...]` por el enlace real de cada página de la wiki.
+</Note>
+
+| # | Módulo | Descripción técnica |
+| --- | --- | --- |
+| 01 | [Visión General]([INSERTAR_AQUÍ_RUTA_01]) | Contexto, alcance y objetivos del sistema WMS. |
+| 02 | [Arquitectura del Sistema]([INSERTAR_AQUÍ_RUTA_02]) | Diseño dual borde/nube y flujo de datos extremo a extremo. |
+| 03 | [Nodo Embebido ESP32]([INSERTAR_AQUÍ_RUTA_03]) | Adquisición no bloqueante con FreeRTOS, ISRs y servidor web. |
+| 04 | [Sensórica & Fusión]([INSERTAR_AQUÍ_RUTA_04]) | Instrumentación y lógica de fusión hidrometeorológica. |
+| 05 | [Gateway Raspberry Pi]([INSERTAR_AQUÍ_RUTA_05]) | Broker Mosquitto, persistencia SQLite y concentración de telemetría. |
+| 06 | [Telemetría MQTT]([INSERTAR_AQUÍ_RUTA_06]) | Topología de tópicos, QoS y comunicación bidireccional. |
+| 07 | [Nube & Ubidots]([INSERTAR_AQUÍ_RUTA_07]) | Integración cloud, dashboards y alertas remotas. |
+| 08 | [Inteligencia Artificial]([INSERTAR_AQUÍ_RUTA_08]) | API predictiva y soporte de decisiones de racionamiento. |
+| 09 | [Interfaz In Situ & Alarmas]([INSERTAR_AQUÍ_RUTA_09]) | Pantalla local, alarma física y apagado remoto (ACK). |
+| 10 | [Validación & Resultados]([INSERTAR_AQUÍ_RUTA_10]) | Pruebas de campo, métricas y evidencia de desempeño. |
+| 11 | [Despliegue & Replicabilidad]([INSERTAR_AQUÍ_RUTA_11]) | Guía de instalación, costos y escalamiento regional. |
+
+---
+
+## ▸ Metadatos del Proyecto
+
+| Campo | Detalle |
+| --- | --- |
+| **Fecha de entrega** | `[INSERTAR_AQUÍ_FECHA_ENTREGA]` |
+| **Sustentación** | `[INSERTAR_AQUÍ_FECHA_SUSTENTACION]` |
+| **Equipo de desarrollo** | `[INSERTAR_AQUÍ_INTEGRANTES]` |
+| **Programa** | Universidad de La Sabana · Periodo 2026-2 |
+
+<Info>
+  **Water Monitoring System (WMS) - Sabana Centro** · Monitoreo hidrometeorológico de bajo costo para la resiliencia hídrica regional.
+</Info>
