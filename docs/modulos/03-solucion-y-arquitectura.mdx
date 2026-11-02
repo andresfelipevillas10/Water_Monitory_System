@@ -1,0 +1,128 @@
+---
+title: "03 ◈ Solución y Arquitectura"
+sidebarTitle: "03. Solución y Arquitectura"
+description: "Arquitectura distribuida Edge-to-Cloud de 4 capas, lógica de fusión sensorial 80/20, clasificación de alarmas y modelo de escalabilidad industrial del WMS."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-03%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 03/11" />
+  <img src="https://img.shields.io/badge/Dominio-Arquitectura%20General-6366f1?style=for-the-badge" alt="Dominio: Arquitectura General" />
+  <img src="https://img.shields.io/badge/Estado-Especificación%20Cerrada-22c55e?style=for-the-badge" alt="Estado: Especificación Cerrada" />
+</div>
+
+# Solución y Arquitectura ⬡ Telemetría Edge-to-Cloud
+
+**Una topología distribuida que piensa en el borde y decide en la nube.** El sistema reparte la carga entre cuatro capas cooperativas, desde la adquisición sensorial hasta el soporte a la decisión por IA, garantizando operación continua incluso sin conectividad externa.
+
+---
+
+## ◈ Arquitectura General del Sistema (Topología de 4 Capas)
+
+<Frame caption="Diagrama general de la arquitectura distribuida WMS">
+  <img src="[INSERTAR_AQUÍ_IMAGEN_DIAGRAMA_ARQUITECTURA]" alt="Diagrama de arquitectura WMS" />
+</Frame>
+
+<Note>
+El renderizado 3D del envolvente fue conceptualizado con apoyo de IA. Los detalles de prompts y validación se documentan en la [10. Declaración de IA](/modulos/10-declaracion-ia).
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="1 · Percepción y Borde (ESP32)" icon="microchip">
+    Adquisición sensorial (HC-SR04, DHT22, BMP180, BH1750), interfaz local (LCD, buzzer, LED), lógica de fusión y servidor web sobre **WLAN local**.
+  </Card>
+  <Card title="2 · Gateway Local (Raspberry Pi)" icon="server">
+    Recepción de datos vía **MQTT** con broker **Mosquitto** y persistencia en base de datos local **SQLite**.
+  </Card>
+  <Card title="3 · Telemetría Global (Nube)" icon="cloud">
+    Transmisión **MQTT** a **Ubidots**, dashboards remotos y control bidireccional (silenciado remoto de alarmas).
+  </Card>
+  <Card title="4 · Inteligencia Artificial" icon="brain-circuit">
+    Análisis de tendencias y soporte a la decisión mediante modelos de IA (Gemini / ChatGPT).
+  </Card>
+</CardGroup>
+
+**Flujo de comunicación:** el nodo ESP32 publica un payload JSON liviano por MQTT hacia la Raspberry Pi sobre la red local; el gateway persiste en SQLite y reenruta por MQTT a Ubidots; la capa de IA consume los históricos para generar tendencias y recomendaciones. El tablero local se sirve por HTTP sobre WLAN, independiente de la nube.
+
+---
+
+## ⚡ División de Carga Computacional y Edge Computing
+
+El ESP32 opera bajo un principio estricto de **no bloqueo**. Para lograrlo reparte su trabajo sin detener el bucle principal:
+
+<Steps>
+  <Step title="Captura ultrasónica por ISR">
+    El pulso ECHO del HC-SR04 se mide con una interrupción por flanco `CHANGE` marcando el tiempo con `micros()`, sin congelar la CPU.
+  </Step>
+  <Step title="Cálculo de fusión">
+    Con las lecturas disponibles, el nodo computa el índice de riesgo fusionado fuera de la interrupción.
+  </Step>
+  <Step title="Atención del dashboard WLAN local">
+    El servidor web embebido responde a los clientes de la red local en paralelo.
+  </Step>
+  <Step title="Publicación MQTT">
+    Un payload JSON liviano se envía por MQTT a la Raspberry Pi.
+  </Step>
+</Steps>
+
+<Note>
+El almacenamiento (SQLite) y el ruteo hacia Ubidots quedan **en manos del Gateway**, liberando al microcontrolador de tareas pesadas de I/O y red.
+</Note>
+
+---
+
+## ▸ Lógica de Fusión de Sensores: Índice de Riesgo (80/20)
+
+El **Riesgo Fusión** pondera la señal física dominante (nivel de agua) frente al contexto ambiental: **80 %** proviene del nivel físico medido por el HC-SR04 y **20 %** del índice ambiental derivado de radiación, temperatura, sequedad y presión.
+
+```text
+Riesgo_Fusion = (0.80 * Riesgo_Nivel) + (0.20 * Indice_Ambiental)
+```
+
+```text
+Indice_Ambiental = (0.747 * Luz) + (0.148 * Temp) + (0.103 * Sequedad) + (0.002 * Presion)
+```
+
+<Note>
+**Normalización:** cada variable se escala a un rango común [0, 1] respecto a sus umbrales operativos antes de ponderarse, de modo que magnitudes heterogéneas (lux, °C, %HR, hPa) sean comparables y la suma ponderada entregue un índice de riesgo coherente.
+</Note>
+
+---
+
+## ◈ Clasificación de Alarmas y Control Bidireccional
+
+| Tipo | Condición | Hardware | Severidad |
+| --- | --- | --- | --- |
+| **Alarma Tipo 2 (Preventiva)** | Riesgo cercano al 70 % | LED amarillo · buzzer intermitente | Advertencia |
+| **Alarma Tipo 1 (Crítica)** | Riesgo > 85 % (desabastecimiento inminente) | LED rojo · buzzer continuo | Crítica |
+
+<Warning>
+Las alarmas operan de forma autónoma en el borde: se disparan aun sin conectividad hacia el gateway o la nube.
+</Warning>
+
+**Control bidireccional (novedad):** las alarmas pueden silenciarse de dos formas.
+
+- **In situ:** mediante un botón físico en el nodo.
+- **Remotamente:** vía MQTT desde el dashboard de Ubidots, con confirmación de reconocimiento (ACK / Acknowledge) que cierra el lazo de control.
+
+---
+
+## ⬡ Modelo de Negocio (B2G) y Escalabilidad Industrial
+
+El WMS se orienta a un modelo **Business-to-Government (B2G)**: alcaldías, la CAR y empresas de acueducto como usuarios institucionales que requieren vigilancia hídrica confiable y de bajo costo.
+
+### Transición Tecnológica
+
+| Componente | Prototipo Universitario | Versión Industrial |
+| --- | --- | --- |
+| **Microcontrolador** | ESP32 NodeMCU | ESP32 Industrial o STM32 |
+| **Conectividad** | WLAN / WiFi | LoRaWAN / NB-IoT |
+| **Sensor ultrasónico** | HC-SR04 | JSN-SR04T (impermeable) o radar de microondas |
+| **Alimentación** | Adaptador 5V | Panel solar 5W + baterías 18650 |
+| **Envolvente** | Chasis impreso 3D | Gabinete ABS con certificación IP65/IP67 |
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/02-equipo-y-roles">← 02. Equipo y Roles</a>
+  <a href="/modulos/04-hardware">04. Hardware y Sensores →</a>
+</div>

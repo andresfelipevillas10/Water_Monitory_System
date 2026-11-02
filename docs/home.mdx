@@ -1,7 +1,7 @@
 ---
 title: "WMS"
 sidebarTitle: "Home"
-description: "Water Monitoring System (WMS) - Sabana Centro: monitoreo hidrometeorológico continuo y de bajo costo con fusión sensorial, telemetría distribuida y soporte de decisiones por IA."
+description: "Water Monitoring System (WMS) - Sabana Centro: monitoreo continuo y de bajo costo con fusión sensorial, telemetría distribuida y soporte de decisiones por IA."
 ---
 
 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
@@ -24,7 +24,7 @@ description: "Water Monitoring System (WMS) - Sabana Centro: monitoreo hidromete
 
 ## ⬡ ¿Qué es WMS y por qué es innovador?
 
-WMS es una plataforma de monitoreo hidrometeorológico de bajo costo diseñada para cerrar la brecha de observación en reservorios y fuentes de agua dulce de la Sabana Centro. Ante la intensificación del Fenómeno de El Niño, la región carece de instrumentación densa y asequible que permita anticipar el estrés hídrico. WMS responde con una red de nodos embebidos capaces de adquirir, fusionar y transmitir variables críticas en tiempo casi real.
+WMS es una plataforma de monitoreo hidrometeorológico de bajo costo diseñada para cerrar la brecha de observación en reservorios y fuentes de agua  de la Sabana Centro. Ante la intensificación del Fenómeno de El Niño, la región carece de instrumentación densa y asequible que permita anticipar el estrés hídrico. WMS responde con una red de nodos embebidos capaces de adquirir, fusionar y transmitir variables críticas en tiempo casi real.
 
 El sistema combina una **arquitectura dual borde/nube**: el nodo ESP32 ejecuta adquisición no bloqueante bajo FreeRTOS e ISRs, sirve un tablero local por WLAN y aplica lógica de fusión sensorial antes de publicar por MQTT. Un gateway Raspberry Pi concentra la telemetría en un broker Mosquitto con persistencia en SQLite, garantizando operación continua incluso ante cortes de conectividad hacia la nube.
 
@@ -74,10 +74,6 @@ Sobre esa base, WMS integra **inteligencia artificial descentralizada** vía API
   />
 </Frame>
 
-<Tip>
-  Para visualización directa, reemplaza el placeholder por el embed del video. Enlace alternativo: `[INSERTAR_AQUÍ_URL_VIDEO]`
-</Tip>
-
 <CardGroup cols={2}>
   <Card title="Tablero Local (WLAN)" icon="house-signal" href="[INSERTAR_AQUÍ_IP_LOCAL]">
     Dashboard servido por el ESP32 en la red local. Acceso in situ sin dependencia de nube.
@@ -92,23 +88,19 @@ Sobre esa base, WMS integra **inteligencia artificial descentralizada** vía API
 
 ## ⬡ Mapa de Navegación de la Wiki
 
-<Note>
-  Directorio ordenado de los módulos del proyecto. Reemplaza cada ruta `[INSERTAR_AQUÍ...]` por el enlace real de cada página de la wiki.
-</Note>
-
 | # | Módulo | Descripción técnica |
 | --- | --- | --- |
-| 01 | [Visión General]([INSERTAR_AQUÍ_RUTA_01]) | Contexto, alcance y objetivos del sistema WMS. |
-| 02 | [Arquitectura del Sistema]([INSERTAR_AQUÍ_RUTA_02]) | Diseño dual borde/nube y flujo de datos extremo a extremo. |
-| 03 | [Nodo Embebido ESP32]([INSERTAR_AQUÍ_RUTA_03]) | Adquisición no bloqueante con FreeRTOS, ISRs y servidor web. |
-| 04 | [Sensórica & Fusión]([INSERTAR_AQUÍ_RUTA_04]) | Instrumentación y lógica de fusión hidrometeorológica. |
-| 05 | [Gateway Raspberry Pi]([INSERTAR_AQUÍ_RUTA_05]) | Broker Mosquitto, persistencia SQLite y concentración de telemetría. |
-| 06 | [Telemetría MQTT]([INSERTAR_AQUÍ_RUTA_06]) | Topología de tópicos, QoS y comunicación bidireccional. |
-| 07 | [Nube & Ubidots]([INSERTAR_AQUÍ_RUTA_07]) | Integración cloud, dashboards y alertas remotas. |
-| 08 | [Inteligencia Artificial]([INSERTAR_AQUÍ_RUTA_08]) | API predictiva y soporte de decisiones de racionamiento. |
-| 09 | [Interfaz In Situ & Alarmas]([INSERTAR_AQUÍ_RUTA_09]) | Pantalla local, alarma física y apagado remoto (ACK). |
-| 10 | [Validación & Resultados]([INSERTAR_AQUÍ_RUTA_10]) | Pruebas de campo, métricas y evidencia de desempeño. |
-| 11 | [Despliegue & Replicabilidad]([INSERTAR_AQUÍ_RUTA_11]) | Guía de instalación, costos y escalamiento regional. |
+| 01 | [Contexto y Requisitos](/modulos/01-contexto-y-requisitos) | Diagnóstico de la crisis hídrica, pregunta guía y matriz de requisitos. |
+| 02 | [Equipo y Roles](/modulos/02-equipo-y-roles) | Perfiles técnicos, matriz RACI y metodología de trabajo del equipo. |
+| 03 | [Solución y Arquitectura](/modulos/03-solucion-y-arquitectura) | Topología Edge-to-Cloud de 4 capas, fusión 80/20 y escalabilidad. |
+| 04 | [Hardware y Sensores](/modulos/04-hardware) | BOM, ruteo de pines, protección eléctrica y calibración del nodo. |
+| 05 | [Software y Red (MQTT)](/modulos/05-software-y-red) | Firmware ESP32, tópicos MQTT, gateway RPi, SQLite y Ubidots. |
+| 06 | [Módulo de IA](/modulos/06-modulo-ia) | Pipeline de datos, prompts, detección de anomalías y soporte a la decisión. |
+| 07 | [Pruebas y Validación](/modulos/07-pruebas-y-validacion) | Banco de pruebas, suite QA y autoevaluación crítica del protocolo. |
+| 08 | [Resultados y Video](/modulos/08-resultados-y-analisis) | Análisis de telemetría, KPIs y video demostrativo de validación. |
+| 09 | [Conclusiones y Retos](/modulos/09-conclusiones) | Conclusiones, troubleshooting y roadmap de escalabilidad industrial. |
+| 10 | [Declaración de IA](/modulos/10-declaracion-ia) | Uso de IA, prompts auditables y métodos de validación. |
+| 11 | [Anexos y Referencias](/modulos/11-anexos) | Repositorio, datasheets, bibliografía, glosario y licencia. |
 
 ---
 
@@ -116,11 +108,7 @@ Sobre esa base, WMS integra **inteligencia artificial descentralizada** vía API
 
 | Campo | Detalle |
 | --- | --- |
-| **Fecha de entrega** | `[INSERTAR_AQUÍ_FECHA_ENTREGA]` |
-| **Sustentación** | `[INSERTAR_AQUÍ_FECHA_SUSTENTACION]` |
-| **Equipo de desarrollo** | `[INSERTAR_AQUÍ_INTEGRANTES]` |
+| **Fecha de entrega** | `10 de Noviembre de 2026` |
+| **Sustentación** | `10 de noviembre de 2026` |
+| **Equipo de desarrollo** | `Andres Suarez,Jasub Sastre,Thomas Gomez` |
 | **Programa** | Universidad de La Sabana · Periodo 2026-2 |
-
-<Info>
-  **Water Monitoring System (WMS) - Sabana Centro** · Monitoreo hidrometeorológico de bajo costo para la resiliencia hídrica regional.
-</Info>

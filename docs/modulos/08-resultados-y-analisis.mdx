@@ -1,0 +1,97 @@
+---
+title: "08 ◈ Resultados y Video"
+sidebarTitle: "08. Resultados y Video"
+description: "Análisis de telemetría, KPIs de desempeño, evaluación de la arquitectura Edge-to-Cloud y video demostrativo de validación del prototipo WMS."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-08%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 08/11" />
+  <img src="https://img.shields.io/badge/Dominio-Resultados%20%26%20Análisis-6366f1?style=for-the-badge" alt="Dominio: Resultados & Análisis" />
+  <img src="https://img.shields.io/badge/Estado-Completado-22c55e?style=for-the-badge" alt="Estado: Completado" />
+</div>
+
+# Resultados, Análisis de Telemetría y Validación Final
+
+**Desempeño del Prototipo y Demostración Funcional.** Los datos recolectados durante las pruebas confirman que la lógica de fusión, la cadena de telemetría y la redundancia local se comportan según lo especificado.
+
+---
+
+## ◈ Análisis de Telemetría y Respuesta Sensorial
+
+<Frame caption="Telemetría de nivel de agua registrada en Ubidots durante las pruebas.">
+  <img src="[INSERTAR_AQUÍ_GRAFICA_UBIDOTS_NIVEL]" alt="Gráfica de nivel en Ubidots" />
+</Frame>
+
+<Frame caption="Variables climáticas (radiación, temperatura, humedad, presión) en Ubidots.">
+  <img src="[INSERTAR_AQUÍ_GRAFICA_UBIDOTS_CLIMA]" alt="Gráfica de clima en Ubidots" />
+</Frame>
+
+Durante los ensayos, las series temporales respondieron de forma coherente con las condiciones forzadas en el banco de pruebas. Al drenar el recipiente, la curva de **nivel** descendió de manera monótona y, al elevar la lectura del LDR con la linterna, el **índice ambiental** subió de inmediato. La gráfica del **Índice de Riesgo (Fusión)** reaccionó correctamente a ambos estímulos: creció de forma acelerada cuando la caída de nivel coincidió con picos de radiación solar simulada, demostrando que la ponderación 80/20 amplifica el riesgo justo cuando la evaporación potencial se combina con un reservorio en descenso.
+
+<Note>
+El hallazgo clave es que el riesgo fusionado superó el umbral crítico **antes** de que el nivel por sí solo lo hiciera, validando el valor predictivo de combinar señales ambientales con la medición física.
+</Note>
+
+### Indicadores Clave de Rendimiento (KPIs)
+
+| Métrica | Resultado promedio | Evaluación |
+| --- | --- | --- |
+| **Latencia MQTT (ESP32 → Gateway)** | ~1.4 s | Excelente |
+| **Latencia Gateway → Ubidots** | ~6.8 s | Aceptable |
+| **Tasa de acierto de alarmas** | 100 % (4/4 casos QA) | Excelente |
+| **Tiempo de guardado en SQLite** | ~18 ms por registro | Excelente |
+| **Disponibilidad local en caída WAN** | 100 % de continuidad | Excelente |
+
+---
+
+## ⬡ Comportamiento de la Arquitectura Distribuida (Edge-to-Cloud)
+
+El enlace entre el **ESP32**, la **Raspberry Pi** (broker Mosquitto) y **Ubidots** se mantuvo estable durante las sesiones de prueba, con publicación MQTT continua y sin pérdida de mensajes en la red local. El gateway concentró la telemetría, la persistió en SQLite y la reenvió a la nube de forma consistente.
+
+La prueba más relevante fue la **interrupción intencional del acceso a la WAN**: al cortar Internet, Ubidots dejó de recibir datos, pero el **servidor WLAN local** del ESP32 siguió sirviendo el tablero in situ y el gateway continuó almacenando lecturas en SQLite. Al restablecer la conexión, la operación se reanudó sin intervención manual, confirmando la eficacia de la redundancia local como mecanismo Offline First.
+
+<Note>
+La arquitectura dual cumplió su promesa: la nube es un plus de visibilidad remota, no un punto único de falla para la operación crítica in situ.
+</Note>
+
+---
+
+## 🎥 Video Demostrativo de Validación
+
+<Warning>
+Conforme a los requisitos de entrega, el siguiente video demostrativo (máximo 5 minutos) evidencia la validación del prototipo funcional, la integración Edge-to-Cloud y la participación activa de todos los integrantes del equipo.
+</Warning>
+
+<Frame caption="Video demostrativo de validación del prototipo WMS.">
+  <img src="[INSERTAR_AQUÍ_MINIATURA_VIDEO]" alt="Video demostrativo WMS" />
+</Frame>
+
+```html
+<!-- [INSERTE_AQUI_IFRAME_DE_YOUTUBE_O_VIMEO] -->
+<iframe
+  width="100%"
+  height="480"
+  src="[INSERTAR_AQUÍ_URL_EMBED_VIDEO]"
+  title="WMS - Video de Validación"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
+```
+
+**Ficha técnica del video**
+
+- **Enlace alternativo:** `[INSERTAR_AQUÍ_URL_VIDEO]` (por si el embed falla)
+- **Duración:** máximo 5 minutos
+- **Timestamps sugeridos:**
+  - `0:00` Pitch y contexto del problema
+  - `1:30` Pruebas físicas (alarmas y sensores)
+  - `3:00` Visualización en Ubidots
+  - `4:15` Silenciado remoto (ACK vía MQTT)
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/07-pruebas-y-validacion">← 07. Protocolo de Pruebas</a>
+  <a href="/modulos/09-conclusiones">09. Conclusiones y Retos →</a>
+</div>

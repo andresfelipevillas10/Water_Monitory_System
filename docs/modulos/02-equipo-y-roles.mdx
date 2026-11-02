@@ -1,0 +1,111 @@
+---
+title: "02 ◈ Equipo y Roles"
+sidebarTitle: "02. Equipo y Roles"
+description: "Perfiles técnicos, matriz RACI y metodología de trabajo del equipo WMS a través de las cuatro capas de la arquitectura IoT."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-02%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 02/11" />
+  <img src="https://img.shields.io/badge/Dominio-Organización%20%26%20Gestión-6366f1?style=for-the-badge" alt="Dominio: Organización & Gestión" />
+  <img src="https://img.shields.io/badge/Estado-Consolidado-22c55e?style=for-the-badge" alt="Estado: Consolidado" />
+</div>
+
+# Equipo y Roles ⬡ Sinergia e Ingeniería Distribuida
+
+**Tres ingenieros, cuatro capas.** La arquitectura del Challenge #3 reparte el borde, el gateway, la nube y la IA en responsabilidades claras y complementarias, de modo que cada nivel del sistema tenga un dueño técnico y un soporte definido.
+
+---
+
+## ◈ Perfiles del Equipo y Roles Técnicos
+
+<CardGroup cols={3}>
+  <Card title="David Jasub Sastre Arias" icon="user-tie">
+    <Frame caption="David Jasub Sastre Arias">
+      <img src="[INSERTAR_AQUÍ_FOTO_DAVID]" alt="Foto - David Jasub Sastre Arias" />
+    </Frame>
+    **Líder de Proyecto · Arquitectura e Integración Cloud/MQTT**
+
+    ▸ Define la arquitectura general de las cuatro capas y la coordinación entre módulos.
+
+    ▸ Configura la telemetría MQTT bidireccional hacia Ubidots y el dashboard global.
+
+    ▸ Lidera la planeación, los hitos del cronograma y la integración final del sistema.
+  </Card>
+  <Card title="Elioth Thomas Gomez Morales" icon="microchip">
+    <Frame caption="Elioth Thomas Gomez Morales">
+      <img src="[INSERTAR_AQUÍ_FOTO_ELIOTH]" alt="Foto - Elioth Thomas Gomez Morales" />
+    </Frame>
+    **Ingeniero de Hardware · Firmware Embebido e IA**
+
+    ▸ Desarrolla el firmware del ESP32, incluidas las rutinas de interrupción (ISR) no bloqueantes.
+
+    ▸ Integra y ensambla la sensórica física (HC-SR04, DHT22, BMP180, BH1750).
+
+    ▸ Implementa el módulo de IA para predicción hídrica y detección de anomalías.
+  </Card>
+  <Card title="Andrés Felipe Suárez Banoy" icon="server">
+    <Frame caption="Andrés Felipe Suárez Banoy">
+      <img src="[INSERTAR_AQUÍ_FOTO_ANDRES]" alt="Foto - Andrés Felipe Suárez Banoy" />
+    </Frame>
+    **Ingeniero de Red Local · Operaciones y Technical Writer**
+
+    ▸ Configura la Raspberry Pi, el broker Mosquitto MQTT y la persistencia en SQLite.
+
+    ▸ Opera el gateway de borde y asegura la estrategia Offline First.
+
+    ▸ Redacta y mantiene la documentación oficial de la Wiki.
+  </Card>
+</CardGroup>
+
+<Note>
+Los perfiles se actualizaron para cubrir la nueva infraestructura distribuida del Challenge #3: Borde (ESP32), Gateway (Raspberry Pi + SQLite), Nube (Ubidots vía MQTT) y Módulo de IA.
+</Note>
+
+---
+
+## ⚡ Matriz de Responsabilidades (RACI)
+
+| Fase / Componente del proyecto | Líder Principal | Soporte Técnico |
+| --- | --- | --- |
+| **1. Arquitectura y Nube (Ubidots / MQTT)** | David Sastre | Andrés Suárez |
+| **2. Hardware y Firmware de Borde (ESP32)** | Elioth Gomez | David Sastre |
+| **3. Gateway y Base de Datos (Raspberry Pi / SQLite)** | Andrés Suárez | Elioth Gomez |
+| **4. Pruebas Físicas y Calibración** | Elioth Gomez | Andrés Suárez |
+| **5. Documentación y Gestión (Wiki)** | Andrés Suárez | David Sastre |
+
+---
+
+## ▸ Bitácora de Trabajo y Trazabilidad
+
+El equipo mantiene un control continuo de asistencia y trazabilidad operativa para auditar el avance real de cada integrante por sesión de trabajo. Cada entrada registra fecha, responsable, componente intervenido y resultado, lo que permite correlacionar decisiones de ingeniería con la evolución del prototipo y sustentar el esfuerzo distribuido exigido por la rúbrica.
+
+<Note>
+La bitácora se gestiona en Airtable e se indexa directamente en la Wiki. Reemplaza el marcador por el código de incrustación de tu base.
+</Note>
+
+```html
+<!-- [INSERTAR_IFRAME_DE_AIRTABLE_AQUI] -->
+<iframe
+  class="airtable-embed"
+  src="[INSERTAR_AQUÍ_URL_EMBED_AIRTABLE]"
+  frameborder="0"
+  width="100%"
+  height="533"
+  style="background: transparent; border: 1px solid #ccc;">
+</iframe>
+```
+
+---
+
+## ◈ Declaración sobre Uso de Inteligencia Artificial
+
+<Info>
+El equipo utilizó herramientas de IA como apoyo en redacción, depuración de código y lluvia de ideas. La lógica de ingeniería, las decisiones arquitectónicas y la autoría técnica del sistema son estrictamente del equipo. Para auditar los prompts, transcripciones y métodos de validación exigidos por la rúbrica, dirígete a la [10. Declaración de IA](/modulos/10-declaracion-ia).
+</Info>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/01-contexto-y-requisitos">← 01. Contexto y Requisitos</a>
+  <a href="/modulos/03-solucion-y-arquitectura">03. Solución y Arquitectura →</a>
+</div>

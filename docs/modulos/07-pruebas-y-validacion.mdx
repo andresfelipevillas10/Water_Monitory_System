@@ -1,0 +1,73 @@
+---
+title: "07 ◈ Pruebas y Validación"
+sidebarTitle: "07. Pruebas y Validación"
+description: "Protocolo formal de pruebas del WMS: banco de ensayo, suite de casos QA del sistema completo (ESP32, gateway RPi, Ubidots) y autoevaluación crítica."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-07%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 07/11" />
+  <img src="https://img.shields.io/badge/Dominio-Testing%20%26%20QA-6366f1?style=for-the-badge" alt="Dominio: Testing & QA" />
+  <img src="https://img.shields.io/badge/Estado-Pruebas%20Finalizadas-22c55e?style=for-the-badge" alt="Estado: Pruebas Finalizadas" />
+</div>
+
+# Validación Experimental y Protocolo de Pruebas
+
+**Aseguramiento de Calidad (QA), Casos de Uso y Autoevaluación.** El sistema completo (ESP32 in situ, gateway Raspberry Pi y enlace a Ubidots) se validó bajo un protocolo formal que fuerza la lógica de fusión y verifica la tolerancia a fallos.
+
+---
+
+## ◈ Configuración del Banco de Pruebas (Testbench)
+
+<Frame caption="Banco de pruebas: simulación del reservorio y forzado de variables ambientales.">
+  <img src="[INSERTAR_AQUÍ_FOTOGRAFIA_BANCO_PRUEBAS_SIMULACION]" alt="Banco de pruebas de simulación" />
+</Frame>
+
+El entorno experimental recrea las condiciones del reservorio a escala de laboratorio:
+
+- **Simulación del nivel de agua:** un recipiente de acrílico / balde graduado donde se añade y retira agua para forzar el cruce de umbrales del HC-SR04.
+- **Simulación de radiación/luz:** una linterna para elevar la lectura del LDR y sombra manual para reducirla, reproduciendo picos y caídas de irradiancia.
+- **Simulación de clima:** calor localizado (fuente térmica) y variación de humedad cercana al DHT para desplazar el índice ambiental y activar la lógica de fusión.
+
+<Note>
+El objetivo del testbench no es reproducir el ambiente real con fidelidad total, sino **provocar deliberadamente** los estados límite del sistema para observar su respuesta.
+</Note>
+
+---
+
+## ⬡ Matriz de Casos de Prueba (QA Test Suite)
+
+| ID Prueba | Módulo | Condición de entrada (acción) | Resultado esperado | Resultado obtenido | Estado |
+| --- | --- | --- | --- | --- | --- |
+| **QA-01** | Hardware | Variación rápida de nivel cruzando el umbral crítico | Alarma in situ: LED rojo + buzzer continuo | LED rojo y buzzer activados | ✔️ Pasa |
+| **QA-02** | Software / Fusión | Nivel estable pero aumento drástico de temperatura y luz | Disparo de Alarma Tipo 2 (Preventiva) | LED amarillo + buzzer intermitente | ✔️ Pasa |
+| **QA-03** | Red / MQTT | Desconexión de Ubidots (caída WAN) | ESP32 y gateway RPi siguen operando localmente sin bloqueo | Operación local continua; datos persistidos en SQLite | ✔️ Pasa |
+| **QA-04** | Interacción | Orden de silencio remoto (ACK) desde Ubidots | Buzzer físico se apaga vía MQTT | Buzzer silenciado tras recibir el ACK | ✔️ Pasa |
+
+<Note>
+Las pruebas se ejecutaron sobre el sistema integrado extremo a extremo, no sobre módulos aislados, para validar la interacción real entre capas.
+</Note>
+
+---
+
+## ▸ Autoevaluación del Protocolo de Pruebas
+
+<Warning>
+**Requisito crítico de la rúbrica.** Esta sección evalúa de forma honesta la confiabilidad de nuestro protocolo y reconoce sus límites.
+</Warning>
+
+Nuestras pruebas ofrecen una **confiabilidad alta para la lógica funcional**: validan que los umbrales, la fusión 80/20, la máquina de estados de alarmas y el control bidireccional ACK se comportan como se especificó. En ese sentido, el comportamiento del software y la cadena de telemetría (ESP32 → Mosquitto → SQLite → Ubidots) quedó verificado de extremo a extremo. Sin embargo, su validez es **representativa del laboratorio, no del campo**.
+
+Hay variables de la vida real que no pudimos replicar. El **viento** altera la superficie del agua y genera lecturas erráticas en el ultrasonido que un balde quieto no reproduce. La **corrosión y suciedad de los sensores a largo plazo** (humedad permanente, sedimentos, condensación sobre el transductor) degradaría la precisión de formas que una prueba de minutos no revela. La **atenuación de la señal WiFi en exteriores** por distancia, vegetación densa u obstáculos no se manifiesta en una red local de laboratorio, donde el nodo y el gateway están a pocos metros.
+
+Tampoco evaluamos el comportamiento bajo **condiciones meteorológicas extremas sostenidas** ni la **autonomía energética** en un despliegue real sin red eléctrica. Reconocer estas limitaciones es parte del rigor ingenieril: la simulación demuestra que la lógica es correcta, pero una validación de campo prolongada sería indispensable antes de un despliegue industrial.
+
+<Info>
+Admitir las limitaciones del entorno de simulación refleja madurez de ingeniería y define con claridad el trabajo futuro necesario para la etapa industrial.
+</Info>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/06-modulo-ia">← 06. Módulo de IA</a>
+  <a href="/modulos/08-resultados-y-analisis">08. Resultados y Video →</a>
+</div>

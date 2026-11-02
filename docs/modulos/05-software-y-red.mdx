@@ -1,0 +1,150 @@
+---
+title: "05 ◈ Software y Red (MQTT)"
+sidebarTitle: "05. Software y Red"
+description: "Firmware embebido del ESP32, integración MQTT, servicios del gateway Raspberry Pi, persistencia SQLite y telemetría hacia Ubidots en el WMS."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-05%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 05/11" />
+  <img src="https://img.shields.io/badge/Dominio-Software%20%26%20Redes-6366f1?style=for-the-badge" alt="Dominio: Software & Redes" />
+  <img src="https://img.shields.io/badge/Estado-Estable-22c55e?style=for-the-badge" alt="Estado: Estable" />
+</div>
+
+# Diseño e Implementación de Software y Telecomunicaciones
+
+**Firmware Embebido, Integración MQTT y Servicios Gateway.** El ESP32 deja de ser un servidor aislado para convertirse también en cliente MQTT (Publish/Subscribe), mientras la Raspberry Pi concentra la telemetría, la persistencia y el puente hacia la nube.
+
+---
+
+## ◈ Diagramas UML del Sistema
+
+<Frame caption="Casos de uso: interacción de la Autoridad con el Dashboard Web y la Alarma Física.">
+  <img src="[INSERTAR_AQUÍ_UML_CASOS_USO]" alt="UML de casos de uso" />
+</Frame>
+
+<Frame caption="Máquina de estados de las alarmas: Normal → Preventiva → Crítica → Silenciada.">
+  <img src="[INSERTAR_AQUÍ_UML_ESTADOS]" alt="UML de estados de alarmas" />
+</Frame>
+
+<Frame caption="Secuencia de telemetría: ESP32 → (WLAN/MQTT) → Mosquitto (RPi) → SQLite → Ubidots.">
+  <img src="[INSERTAR_AQUÍ_UML_SECUENCIA_MQTT]" alt="UML de secuencia MQTT" />
+</Frame>
+
+---
+
+## ⬡ Firmware del Nodo de Borde (ESP32)
+
+**Herramientas:** Core ESP32, `PubSubClient` (MQTT), `WiFi`, `DHT`, `Wire`.
+
+### El Superloop Concurrente
+
+El firmware usa `millis()` en lugar de `delay()` para que la recolección de sensores, el servidor WLAN local y el envío MQTT convivan sin bloqueos.
+
+```cpp
+void loop() {
+  unsigned long ahora = millis();
+
+  // 1. Adquisición periódica de sensores (no bloqueante)
+  if (ahora - tUltimaLectura >= INTERVALO_LECTURA) {
+    tUltimaLectura = ahora;
+    leerSensores();          // DHT, BMP180, LDR + distancia por ISR
+    calcularFusion();        // Índice de Riesgo 80/20
+    actualizarAlarmas();     // Máquina de estados de alarmas
+  }
+
+  // 2. Atención del servidor web local (redundancia in-situ)
+  servidorWeb.handleClient();
+
+  // 3. Telemetría MQTT (publish/subscribe)
+  if (ahora - tUltimoEnvio >= INTERVALO_MQTT) {
+    tUltimoEnvio = ahora;
+    publicarTelemetria();    // wms/sabana/nodo1/telemetria
+  }
+  mqtt.loop();               // procesa mensajes entrantes (ACK remoto)
+}
+```
+
+### Módulos Internos
+
+<CardGroup cols={2}>
+  <Card title="Adquisición" icon="wave-square">
+    Captura del pulso ECHO por ISR (`CHANGE` + `micros()`) y lectura de DHT, BMP180 y LDR.
+  </Card>
+  <Card title="Fusión" icon="layer-group">
+    Cálculo del Índice de Riesgo 80/20 a partir de nivel y variables ambientales.
+  </Card>
+  <Card title="Servidor Web Local" icon="house-signal">
+    Tablero WLAN servido por el ESP32 para redundancia in situ sin depender de la nube.
+  </Card>
+  <Card title="Módulo de Telemetría (MQTT)" icon="tower-broadcast">
+    Nuevo cliente MQTT que publica telemetría y se suscribe a órdenes remotas.
+  </Card>
+</CardGroup>
+
+### Manejo de Errores (Tolerancia a Fallos)
+
+<Warning>
+Si un sensor climático devuelve `NaN`, el sistema **no se detiene**: el nivel de agua sigue reportándose y el nodo transiciona a `ESTADO_FALLA`, señalando datos ambientales no confiables sin perder la medición crítica de nivel.
+</Warning>
+
+---
+
+## ▸ Arquitectura de Red y Telemetría
+
+### Gateway Local (Raspberry Pi)
+
+La Raspberry Pi ejecuta **Mosquitto** como broker MQTT local y un script (Python / Node) que **suscribe** la telemetría, la guarda en **SQLite** para persistencia y luego hace de **bridge** reenviando los datos hacia **Ubidots**. Así, aun sin Internet, los datos quedan almacenados localmente y se sincronizan al recuperar la conexión.
+
+### Diccionario de Tópicos MQTT
+
+| Tópico | Dirección | Propósito |
+| --- | --- | --- |
+| `wms/sabana/nodo1/telemetria` | ESP32 **publica** | Payload JSON con todas las variables medidas |
+| `wms/sabana/nodo1/alarmas/estado` | ESP32 **publica** | Cambio de estado crítico de la alarma |
+| `wms/sabana/nodo1/alarmas/ack` | ESP32 **suscribe** | Recibe la orden de silencio remoto (ACK) |
+
+### Estructura del Payload (JSON)
+
+```json
+{
+  "nodo": "nodo1",
+  "nivel": 72.4,
+  "riesgo": 0.68,
+  "luz": 845,
+  "temp": 24.3,
+  "humedad": 58.1,
+  "presion": 1012.5,
+  "estado": "PREVENTIVA",
+  "ts": 1730563200
+}
+```
+
+<Note>
+El payload se mantiene liviano (JSON plano) para minimizar el ancho de banda y la carga de parseo en el gateway.
+</Note>
+
+---
+
+## ◈ Dashboards y Control Bidireccional
+
+El sistema expone dos tableros que conviven:
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Local (WLAN)" icon="house-signal">
+    Servido por el ESP32 sobre la red local para visualización in situ, independiente de la nube.
+  </Card>
+  <Card title="Dashboard Global (Ubidots)" icon="cloud">
+    Panel en la nube que consume la telemetría MQTT con históricos, alertas y control remoto.
+  </Card>
+</CardGroup>
+
+<Warning>
+La **Alarma Tipo 1** (buzzer y LED rojo) requiere reconocimiento (Acknowledge): se silencia **presencialmente** con el botón físico o **remotamente** publicando un `"1"` en el tópico `wms/sabana/nodo1/alarmas/ack`.
+</Warning>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/04-hardware">← 04. Hardware y Sensores</a>
+  <a href="/modulos/06-modulo-ia">06. Módulo de IA →</a>
+</div>

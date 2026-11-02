@@ -1,0 +1,147 @@
+---
+title: "04 ◈ Hardware y Sensores"
+sidebarTitle: "04. Hardware y Sensores"
+description: "Diseño e implementación de hardware del WMS: arquitectura de borde (ESP32) y gateway local (Raspberry Pi), BOM, ruteo de pines, protección eléctrica y calibración."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-04%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 04/11" />
+  <img src="https://img.shields.io/badge/Dominio-Hardware%20%26%20Sensores-6366f1?style=for-the-badge" alt="Dominio: Hardware & Sensores" />
+  <img src="https://img.shields.io/badge/Estado-Ensamblado-22c55e?style=for-the-badge" alt="Estado: Ensamblado" />
+</div>
+
+# Diseño e Implementación de Hardware y Electrónica
+
+**Arquitectura de Borde (ESP32) y Gateway Local (Raspberry Pi).** El nodo de borde gobierna la sensórica y los actuadores in situ; la Raspberry Pi actúa como gateway/broker en la misma red local, cerrando la capa física de la arquitectura distribuida.
+
+---
+
+## ◈ Arquitectura Física y Diagramas UML
+
+El diseño partió de un boceto a lápiz de la disposición de componentes y evolucionó hacia la validación digital en entornos de simulación (Proteus / Wokwi) antes del ensamblaje físico definitivo. Este flujo permitió verificar niveles lógicos, direcciones I2C y consumo antes de energizar el hardware real.
+
+<Frame caption="Boceto inicial de la disposición de componentes del nodo de borde.">
+  <img src="[INSERTAR_AQUÍ_BOCETO_INICIAL]" alt="Boceto inicial del nodo" />
+</Frame>
+
+<Frame caption="Diagrama de despliegue UML: los periféricos I/O se conectan al ESP32, y el ESP32 se comunica con la Raspberry Pi vía red local.">
+  <img src="[INSERTAR_AQUÍ_DIAGRAMA_DESPLIEGUE_UML]" alt="Diagrama de despliegue UML" />
+</Frame>
+
+---
+
+## ⬡ Lista de Materiales (BOM) y Sensores
+
+| Componente | Variable medida | Descripción técnica | Rango operativo |
+| --- | --- | --- | --- |
+| **ESP32** | — | Microcontrolador del nodo de borde con WiFi integrado | 3.3V lógico · dual-core |
+| **Raspberry Pi** | — | Gateway IoT local (broker MQTT + SQLite) | 5.1V / 3A |
+| **HC-SR04** | Nivel de agua | Sensor ultrasónico, pulsos de 40 kHz, señal 5V | 2 cm – 400 cm |
+| **DHT11 / DHT22** | Temperatura / Humedad | Sensor capacitivo de temperatura y humedad relativa | 0–50 °C · 20–90 %HR |
+| **BMP180** | Presión atmosférica | Sensor barométrico por bus I2C (0x77) | 300–1100 hPa |
+| **LDR / Fotorresistor** | Radiación / Luz | Sensor analógico de intensidad lumínica | Lectura ADC 0–4095 |
+| **LCD 16x2 + I2C** | Interfaz local | Visualización in situ vía backpack I2C (0x27) | 5V |
+| **Pulsador** | Control | Botón de reconocimiento / silenciado de alarma | Pull-up |
+| **Buzzer + LED RGB** | Alarmas in situ | Actuadores sonoro y lumínico de alerta | 3.3V (PWM) |
+
+<Note>
+El **BH1750** fue sustituido por un **LDR/Fotorresistor** por disponibilidad de componentes. La medición de radiación se mantiene mediante lectura analógica calibrada, sin sacrificar los requerimientos de fusión ambiental.
+</Note>
+
+---
+
+## ▸ Ruteo de Pines y Esquemático (Montaje del Nodo ESP32)
+
+<Frame caption="Esquemático digital del nodo (Proteus / Wokwi).">
+  <img src="[INSERTAR_AQUÍ_ESQUEMATICO_DIGITAL_O_PROTEUS]" alt="Esquemático digital" />
+</Frame>
+
+<Frame caption="Fotografía del montaje real del nodo de borde.">
+  <img src="[INSERTAR_AQUÍ_FOTOGRAFIA_MONTAJE_REAL]" alt="Montaje real" />
+</Frame>
+
+| Pin ESP32 | Función / Señal | Componente | Alimentación | Observación |
+| --- | --- | --- | --- | --- |
+| **GPIO21 / GPIO22** | SDA / SCL (I2C) | BMP180 + LCD I2C | 3.3V / 5V | Bus I2C compartido |
+| **GPIO18** | TRIG | HC-SR04 | 5V | Disparo del pulso |
+| **GPIO19** | ECHO | HC-SR04 | 3.3V | Vía divisor de tensión |
+| **GPIO27** | Datos | DHT11/22 | 3.3V | Resistencia pull-up |
+| **GPIO34** | ADC | LDR | 3.3V | Solo entrada (input-only) |
+| **GPIO14** | Entrada digital | Pulsador | 3.3V | Configurado Pull-Up |
+| **GPIO25 / GPIO26 / GPIO32** | PWM | LED RGB | 3.3V | Canales R/G/B |
+| **GPIO33** | Salida digital | Buzzer | 3.3V | Activo en LOW |
+
+---
+
+## ⚡ Protección Eléctrica y Diseño de Buses
+
+### Divisor de Tensión (ECHO)
+
+El pin ECHO del HC-SR04 entrega **5V**, pero los GPIO del ESP32 toleran un máximo de **3.3V**. Conectarlo directo a GPIO19 **quemaría el pin**. Se interpone un divisor resistivo con `R1 = 1 kΩ` y `R2 = 2 kΩ`:
+
+```text
+Vout = Vin * ( R2 / (R1 + R2) )
+Vout = 5V  * ( 2kΩ / (1kΩ + 2kΩ) )
+Vout = 5V  * 0.6667
+Vout ≈ 3.33 V
+```
+
+<Warning>
+Nunca conectar la señal ECHO de 5V directamente al GPIO19. El divisor de tensión es obligatorio para proteger el microcontrolador.
+</Warning>
+
+### Compartición del Bus I2C
+
+Para reducir cableado, el **BMP180 (0x77)** y el **LCD 16x2 (0x27)** se conectan en paralelo sobre el mismo bus I2C (GPIO21/22). Al tener direcciones distintas conviven sin conflicto en las mismas dos líneas SDA/SCL.
+
+---
+
+## ◈ Calibración Matemática e Interrupciones de Hardware (ISR)
+
+### Calibración del Nivel
+
+El nivel se calibra definiendo umbrales físicos del reservorio, por ejemplo **Lleno = 5 cm** (distancia mínima al sensor) y **Vacío = 15 cm** (distancia máxima). El porcentaje de capacidad se calcula de forma dinámica:
+
+```text
+Porcentaje_Capacidad = ((Distancia_Maxima - Distancia_Medida) / (Distancia_Maxima - Distancia_Minima)) * 100
+```
+
+### Lectura Ultrasónica por ISR
+
+<Steps>
+  <Step title="Se prohíbe pulseIn()">
+    `pulseIn()` es bloqueante: detiene la ejecución mientras espera el pulso, congelando el servidor web y la atención de red del ESP32.
+  </Step>
+  <Step title="Interrupción por flanco CHANGE">
+    Se asocia una ISR al pin ECHO que dispara en cada cambio de estado (`CHANGE`).
+  </Step>
+  <Step title="Marca de tiempo con micros()">
+    En el flanco de subida se guarda el instante inicial; en el de bajada, el final.
+  </Step>
+  <Step title="Cálculo fuera de la ISR">
+    La diferencia de tiempos entrega el ancho del pulso y la distancia se calcula en el bucle principal, sin bloquear nada.
+  </Step>
+</Steps>
+
+---
+
+## ⬡ Alimentación y Perfil de Consumo Eléctrico
+
+El **Nodo ESP32** se alimenta con un cargador de pared de **5V / 2A**. Su consumo varía según el estado operativo:
+
+| Estado operativo | Consumo aproximado |
+| --- | --- |
+| Inactivo | ~85 mA |
+| Transmisión de red | ~120 mA |
+| Alarma crítica | ~165 mA |
+
+<Note>
+La **Raspberry Pi (Gateway)** se alimenta de forma independiente con una fuente de **5.1V / 3A**, dimensionada para sostener el broker MQTT y la base de datos SQLite de forma estable.
+</Note>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/03-solucion-y-arquitectura">← 03. Solución y Arquitectura</a>
+  <a href="/modulos/05-software-y-red">05. Software y Red (MQTT) →</a>
+</div>

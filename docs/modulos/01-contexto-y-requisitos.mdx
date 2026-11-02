@@ -1,0 +1,129 @@
+---
+title: "01 ◈ Contexto y Requisitos"
+sidebarTitle: "01. Contexto y Requisitos"
+description: "Diagnóstico de la crisis hídrica en Sabana Centro, pregunta guía del reto y matriz de requisitos para la vigilancia hidrometeorológica distribuida."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-01%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 01/11" />
+  <img src="https://img.shields.io/badge/Dominio-Problemática%20%26%20Requisitos-6366f1?style=for-the-badge" alt="Dominio: Problemática & Requisitos" />
+  <img src="https://img.shields.io/badge/Estado-Especificación%20Cerrada-22c55e?style=for-the-badge" alt="Estado: Especificación Cerrada" />
+  <img src="https://img.shields.io/badge/Revisión-v2.0%20Challenge%20%233-f59e0b?style=for-the-badge" alt="Revisión v2.0 Challenge #3" />
+</div>
+
+# Contexto y Requisitos ⬡ Vigilancia Hidrometeorológica Distribuida
+
+**Del prototipo aislado al ecosistema IoT de cuatro niveles.** Este módulo define el problema, formaliza la pregunta guía del reto y cierra la especificación de requisitos que gobierna el diseño del Water Monitoring System.
+
+---
+
+## ◈ Contexto Ambiental: La Crisis Hídrica en Sabana Centro (2026)
+
+El Fenómeno de El Niño 2026 ha tensionado de forma severa el balance hídrico de la Sabana Centro de Cundinamarca. El aumento sostenido de la radiación solar acelera la evaporación en reservorios y cuencas abiertas, mientras la reducción de precipitaciones comprime la capacidad de recarga. La Corporación Autónoma Regional (CAR) reporta **20 municipios en riesgo extremo** de desabastecimiento, en línea con los pronósticos climáticos del IDEAM.
+
+El problema de fondo no es únicamente la escasez, sino la **ausencia de instrumentación densa y asequible** que permita observar el recurso en tiempo real. Sin telemetría distribuida, las autoridades locales toman decisiones de racionamiento sobre datos rezagados y agregados, incapaces de capturar la dinámica diaria de evaporación y nivel.
+
+<Warning>
+La combinación de alta radiación, baja humedad y presión atmosférica cambiante incrementa la tasa de evaporación potencial, un factor rara vez monitoreado de forma continua en la región.
+</Warning>
+
+### Impactos Críticos Territoriales
+
+| Categoría | Magnitud / Indicador | Repercusión en Infraestructura Hídrica |
+| --- | --- | --- |
+| **Cobertura en riesgo** | 20 municipios (reporte CAR) | Desabastecimiento proyectado y racionamiento reactivo |
+| **Radiación solar** | Picos sostenidos de irradiancia | Aceleración de la evaporación en reservorios abiertos |
+| **Déficit de precipitación** | Reducción de recarga en cuencas | Descenso progresivo de niveles útiles |
+| **Monitoreo actual** | Mediciones manuales y dispersas | Latencia alta en la detección de eventos críticos |
+| **Capacidad de reacción** | Datos agregados / rezagados | Decisiones de racionamiento sin soporte en tiempo real |
+
+---
+
+## ⚡ La Pregunta Guía del Reto
+
+<Info>
+**Pregunta guía oficial (Challenge #3):** ¿Cómo diseñar un sistema IoT que mida y analice en tiempo real el nivel y/o caudal del agua, la evaporación potencial y variables meteorológicas (radiación solar, temperatura, humedad y presión atmosférica) en la región Sabana Centro (Cundinamarca), que combine múltiples señales ambientales críticas mediante lógica de fusión para generar alertas válidas y emita alertas tempranas "in situ" y en un "tablero de control" local y global a las autoridades locales de manera efectiva?
+</Info>
+
+En su iteración anterior, el sistema era un **prototipo embebido aislado**: un ESP32 con servidor web local y sin conexión externa. La versión definitiva evoluciona hacia una **arquitectura de telemetría distribuida** que conserva la autonomía del borde pero añade respaldo local y procesamiento en la nube. El reto deja de ser "medir y mostrar" para convertirse en "medir, fusionar, respaldar, predecir y alertar" a través de cuatro niveles cooperativos.
+
+<CardGroup cols={2}>
+  <Card title="Periférico / Borde" icon="microchip">
+    ESP32 + sensores HC-SR04, DHT22, BMP180, BH1750, alarmas in situ y servidor web local embebido.
+  </Card>
+  <Card title="Gateway de Borde" icon="server">
+    Raspberry Pi con broker Mosquitto MQTT local y persistencia en base de datos SQLite.
+  </Card>
+  <Card title="Plataforma Global / Nube" icon="cloud">
+    Ubidots vía MQTT con dashboards autenticados y desactivación remota de alarmas.
+  </Card>
+  <Card title="Inteligencia Artificial" icon="brain-circuit">
+    Predicción hídrica, detección de anomalías y soporte a la toma de decisiones.
+  </Card>
+</CardGroup>
+
+---
+
+## ▸ Matriz de Requisitos del Sistema
+
+### Requisitos Funcionales
+
+| Código | Nombre | Nivel | Descripción técnica | Criterio de aceptación |
+| --- | --- | --- | --- | --- |
+| **RF-01** | Adquisición concurrente por ISR | ESP32 | Captura no bloqueante del pulso ECHO del HC-SR04 mediante interrupción por flanco `CHANGE` con `micros()`. | La CPU y el servidor web permanecen responsivos durante la medición continua. |
+| **RF-02** | Alerta física in-situ | ESP32 | Activación de alarma sonora/lumínica ante umbrales críticos, independiente de la red. | La alarma se dispara aun sin conectividad WAN/LAN. |
+| **RF-03** | Servidor web local embebido | ESP32 | Exposición de un tablero local sobre WLAN Hotspot servido por el propio nodo. | El tablero es accesible vía navegador en la red local. |
+| **RF-04** | Ingesta MQTT local | Gateway | Publicación de telemetría al broker Mosquitto MQTT local en la Raspberry Pi. | Los mensajes se reciben en el broker con el QoS definido. |
+| **RF-05** | Almacenamiento perimetral | Gateway | Persistencia de lecturas en base de datos SQLite en el gateway. | Los registros quedan disponibles tras reinicios y cortes de red. |
+| **RF-06** | Telemetría MQTT a nube | Nube | Reenvío de datos a Ubidots Cloud mediante MQTT bidireccional. | Las variables se visualizan en el dashboard global. |
+| **RF-07** | Control remoto de alarmas (ACK) | Nube | Desactivación remota de la alarma física con confirmación (ACK). | El comando remoto apaga la alarma y confirma el estado. |
+| **RF-08** | Módulo de IA | IA | Predicción hídrica, detección de anomalías y recomendación de racionamiento vía API. | El módulo entrega pronósticos y alertas accionables. |
+
+### Requisitos No Funcionales
+
+| Código | Atributo de calidad | Descripción | Métrica / Tolerancia |
+| --- | --- | --- | --- |
+| **RNF-01** | Rendimiento | Adquisición y publicación en tiempo casi real sin bloqueo de CPU. | Latencia borde → gateway < 2 s |
+| **RNF-02** | Tolerancia a fallos / Offline First | Operación in situ y persistencia local ante caída de WAN/Internet. | 0 pérdida de datos durante desconexión |
+| **RNF-03** | Seguridad | Acceso restringido a dashboards y control de alarmas. | Autenticación obligatoria para usuarios autorizados |
+| **RNF-04** | Costo | Despliegue de bajo costo y reutilización de hardware previo. | Componentes comerciales de bajo costo (COTS) |
+| **RNF-05** | Mantenibilidad | Arquitectura modular y documentada por niveles. | Módulos reemplazables de forma independiente |
+
+---
+
+## ⬡ Restricciones de Diseño Identificadas
+
+| Tipo | Restricción |
+| --- | --- |
+| **Técnicas** | Recursos limitados de hardware (memoria y cómputo del ESP32), interfaces de sensores y ancho de banda de la WLAN. |
+| **Económicas** | Presupuesto universitario acotado; prioridad al bajo costo de despliegue y a la reutilización de hardware. |
+| **Ambientales / Espaciales** | Operación en intemperie, cerca al agua, expuesto a humedad, radiación y variaciones térmicas. |
+| **Temporales** | Cronograma del Challenge #3 con fechas fijas de entrega y sustentación. |
+| **Regulatorias / Seguridad** | Acceso a datos y control de actuadores restringido exclusivamente a autoridades autorizadas. |
+
+---
+
+## ◈ Principios de Ingeniería y Adquisición No Bloqueante
+
+El HC-SR04 mide distancia a partir de la duración del pulso ECHO. La aproximación ingenua con `pulseIn()` es **bloqueante**: detiene la ejecución mientras espera el flanco, congelando la CPU y, con ella, el servidor web embebido y el resto de tareas. En un nodo que debe atender telemetría, alarmas e interfaz local de forma simultánea, esa latencia es inaceptable.
+
+WMS resuelve esto con **captura no bloqueante por interrupciones de hardware**: se registra una ISR sobre el pin ECHO que dispara en cada flanco `CHANGE` y marca el tiempo con `micros()`. La diferencia entre el flanco de subida y el de bajada entrega el ancho del pulso sin detener el bucle principal.
+
+<Tip>
+La ISR solo almacena marcas de tiempo; el cálculo de distancia se realiza fuera de la interrupción, manteniendo la rutina corta y segura.
+</Tip>
+
+### Justificación de la Redundancia
+
+<Warning>
+Si se pierde la conexión WAN/Internet, la nube deja de recibir datos, pero el sistema **no** debe quedar ciego ni mudo.
+</Warning>
+
+Ante una caída de red, el gateway mantiene la **persistencia en SQLite** y el nodo preserva su **operación in situ ininterrumpida**: sigue midiendo, mostrando en el tablero local y activando la alarma física. Al restablecerse la conectividad, la telemetría acumulada puede reenviarse a Ubidots, garantizando continuidad operativa bajo una filosofía Offline First.
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/home">← 00. Inicio</a>
+  <a href="/modulos/02-equipo-y-roles">02. Equipo y Roles →</a>
+</div>

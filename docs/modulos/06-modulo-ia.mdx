@@ -1,0 +1,115 @@
+---
+title: "06 ◈ Módulo de IA"
+sidebarTitle: "06. Módulo de IA"
+description: "Integración del módulo de IA generativa del WMS: pipeline de datos, ingeniería de prompts, detección de anomalías y soporte a la decisión para las autoridades."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-06%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 06/11" />
+  <img src="https://img.shields.io/badge/Dominio-AI%20%26%20Data%20Analytics-6366f1?style=for-the-badge" alt="Dominio: AI & Data Analytics" />
+  <img src="https://img.shields.io/badge/Estado-Implementado-22c55e?style=for-the-badge" alt="Estado: Implementado" />
+</div>
+
+# Integración del Módulo de Inteligencia Artificial
+
+**Soporte a la Decisión, Detección de Anomalías y Predicción Hídrica.** Una capa de IA generativa convierte las series de telemetría del WMS en recomendaciones accionables para la Alcaldía y la CAR.
+
+<Note>
+Esta página describe la **arquitectura del software predictivo integrado** en el WMS. La declaración académica sobre cómo el equipo usó IA para apoyar su trabajo se documenta en la [10. Declaración de IA](/modulos/10-declaracion-ia).
+</Note>
+
+---
+
+## ◈ Objetivo de la Integración
+
+El valor del WMS no está solo en medir, sino en **anticipar**. La IA procesa el historial de variables combinadas (nivel de agua + radiación + clima) para detectar tendencias anómalas, como tasas de evaporación inusualmente altas, **antes** de que deriven en desabastecimiento total.
+
+Al correlacionar señales que un operador humano difícilmente integraría en tiempo real, el módulo entrega a las autoridades locales un soporte a la decisión temprano: permite pasar de una gestión reactiva del agua a una **gestión preventiva**, con recomendaciones de racionamiento fundamentadas en datos.
+
+---
+
+## ⬡ Arquitectura del Pipeline de Datos y AI
+
+<Frame caption="Flujo de datos del módulo de IA: de la telemetría a la recomendación en el dashboard.">
+  <img src="[INSERTAR_AQUÍ_DIAGRAMA_FLUJO_IA]" alt="Diagrama de flujo de IA" />
+</Frame>
+
+<Steps>
+  <Step title="Extracción de series temporales">
+    Se obtienen los históricos desde el Gateway (SQLite) o la nube (Ubidots).
+  </Step>
+  <Step title="Estructuración del payload">
+    Las lecturas se empaquetan en un JSON compacto con contexto temporal.
+  </Step>
+  <Step title="Llamada a la API del LLM">
+    Se envía el payload al modelo (p. ej. Gemini 1.5 Pro / GPT-4o mini).
+  </Step>
+  <Step title="Parsing y visualización">
+    La respuesta estructurada se interpreta y se muestra en el dashboard de las autoridades.
+  </Step>
+</Steps>
+
+---
+
+## ▸ Ingeniería de Prompts y Estructura del Payload
+
+### Payload enviado a la API
+
+```json
+{
+  "nodo": "nodo1",
+  "ubicacion": "Sabana Centro",
+  "ventana": "ultimas_24h",
+  "muestras": [
+    { "ts": 1730559600, "nivel": 74.1, "luz": 810, "temp": 23.8, "humedad": 60.2, "presion": 1013.1 },
+    { "ts": 1730563200, "nivel": 72.4, "luz": 845, "temp": 24.3, "humedad": 58.1, "presion": 1012.5 },
+    { "ts": 1730566800, "nivel": 70.2, "luz": 902, "temp": 25.1, "humedad": 55.0, "presion": 1011.8 }
+  ]
+}
+```
+
+### System Prompt
+
+```text
+Eres un Analista Hidrometeorológico experto que asiste a las autoridades de la
+Sabana Centro (Cundinamarca). Recibes series temporales en tiempo real de un
+sistema IoT con nivel de agua, radiación/luz, temperatura, humedad y presión.
+
+Tu tarea:
+1. Evaluar el riesgo hídrico actual considerando la combinación de variables,
+   no solo el nivel aislado (p. ej. nivel descendente + alta radiación = evaporación acelerada).
+2. Detectar anomalías y posibles fugas o descensos atípicos.
+3. Entregar recomendaciones claras de racionamiento o acción a la Alcaldía/CAR.
+
+Responde SIEMPRE en JSON válido con las claves:
+"estado", "motivo", "recomendacion_alcaldia". No agregues texto fuera del JSON.
+```
+
+<Info>
+Exigir un contrato de salida estricto (solo JSON) hace la respuesta **predecible y parseable**, evitando que el dashboard tenga que interpretar texto libre.
+</Info>
+
+---
+
+## ⚡ Detección de Anomalías y Respuesta Estructurada
+
+Para que el dashboard consuma la inferencia de forma confiable, se le exige a la IA un formato de salida fijo. Así, la interfaz solo lee campos conocidos y renderiza el estado y la recomendación sin ambigüedad.
+
+```json
+{
+  "estado": "Riesgo Alto",
+  "motivo": "Descenso de nivel acelerado combinado con picos de radiación solar",
+  "recomendacion_alcaldia": "Activar fase 1 de racionamiento comunitario"
+}
+```
+
+<Note>
+Si el modelo no detecta patrones críticos, devuelve `"estado": "Normal"` con una recomendación de monitoreo rutinario, manteniendo el mismo esquema de claves.
+</Note>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/05-software-y-red">← 05. Software y Red (MQTT)</a>
+  <a href="/modulos/07-pruebas-y-validacion">07. Protocolo de Pruebas →</a>
+</div>

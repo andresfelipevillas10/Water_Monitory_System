@@ -1,0 +1,71 @@
+---
+title: "09 ◈ Conclusiones y Retos"
+sidebarTitle: "09. Conclusiones y Retos"
+description: "Cierre técnico del WMS: conclusiones de desempeño, retos de ingeniería resueltos y roadmap de escalabilidad industrial del prototipo."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-09%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 09/11" />
+  <img src="https://img.shields.io/badge/Dominio-Cierre%20de%20Proyecto-6366f1?style=for-the-badge" alt="Dominio: Cierre de Proyecto" />
+  <img src="https://img.shields.io/badge/Estado-Finalizado-22c55e?style=for-the-badge" alt="Estado: Finalizado" />
+</div>
+
+# Conclusiones, Retos Técnicos y Trabajo Futuro
+
+**Post-Mortem de Ingeniería y Escalabilidad del WMS.** Un balance honesto de lo que el prototipo demostró, los obstáculos que superó y el camino para convertirlo en una solución industrial.
+
+---
+
+## ◈ Conclusiones Técnicas y Operativas
+
+- **Topología distribuida eficaz:** la arquitectura Edge–Gateway–Cloud evitó la pérdida de datos incluso ante caídas de Internet, gracias a la persistencia local en SQLite y al servidor WLAN del nodo. La nube aporta visibilidad remota, pero nunca es un punto único de falla.
+
+- **Código concurrente robusto:** el uso de interrupciones de hardware (ISR) en lugar de funciones bloqueantes permitió que la adquisición, el servidor web local y la telemetría MQTT convivan sin congelar el ESP32, validando el diseño no bloqueante.
+
+- **Modelo de bajo costo viable:** con componentes comerciales accesibles, el sistema entrega vigilancia hidrometeorológica continua, una respuesta realista y replicable frente al riesgo de desabastecimiento del Fenómeno de El Niño en la Sabana Centro.
+
+- **Fusión sensorial con valor predictivo:** combinar nivel físico y variables ambientales (80/20) anticipó el riesgo antes que la medición de nivel aislada, aportando soporte temprano a la decisión.
+
+<Tip>
+La lección transversal: en IoT crítico, la **autonomía del borde** vale más que la dependencia de la nube. Diseñar para operar sin red es lo que hace confiable al sistema.
+</Tip>
+
+---
+
+## ⬡ Retos Presentados y Resolución (Troubleshooting)
+
+| Categoría | Reto de ingeniería | Solución aplicada |
+| --- | --- | --- |
+| **🔧 Hardware** | Interferencia de voltajes: el HC-SR04 entrega 5V en ECHO y el ESP32 tolera máx. 3.3V, con riesgo de quemar el GPIO. | Diseño de un divisor de tensión (R1=1kΩ, R2=2kΩ → ~3.33V). |
+| **▸ Red / Software** | Concurrencia entre el servidor web local y la captura del HC-SR04, que bloqueaba la CPU con `pulseIn()`. | Implementación de ISR por flanco `CHANGE` con `micros()` para medición no bloqueante. |
+| **⬡ Integración** | Estabilidad del broker Mosquitto en la Raspberry Pi y parseo consistente del payload hacia el módulo de IA. | Suscripción con persistencia en SQLite + contrato JSON estricto de entrada/salida para la IA. |
+
+---
+
+## 🚀 Trabajo Futuro y Escalabilidad (Roadmap Industrial)
+
+<Steps>
+  <Step title="Comunicaciones LPWAN">
+    Migrar de WLAN/WiFi a **LoRaWAN o NB-IoT** para cubrir zonas rurales sin infraestructura de red.
+  </Step>
+  <Step title="Gestión energética autónoma">
+    Integrar recarga solar (panel 5W + baterías 18650) y modos **Deep Sleep** en el ESP32 para despliegue sin red eléctrica.
+  </Step>
+  <Step title="Hardware industrial">
+    Reemplazar sensores estándar por instrumentación impermeable (**JSN-SR04T**) y gabinetes con certificación **IP67**.
+  </Step>
+  <Step title="Machine Learning en el borde (TinyML)">
+    Ejecutar modelos ligeros directamente en el Gateway para reducir la dependencia de APIs externas.
+  </Step>
+</Steps>
+
+<Info>
+Estas mejoras proyectan el WMS desde un prototipo académico hacia un producto comercial con madurez tecnológica **TRL 7+**, listo para validación en entorno operativo real.
+</Info>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/08-resultados-y-analisis">← 08. Resultados y Video</a>
+  <a href="/modulos/10-declaracion-ia">10. Declaración de IA →</a>
+</div>

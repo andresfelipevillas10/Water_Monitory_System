@@ -1,0 +1,92 @@
+---
+title: "11 ◈ Anexos y Referencias"
+sidebarTitle: "11. Anexos y Referencias"
+description: "Repositorio y código fuente, datasheets, bibliografía técnica, glosario y licencia del proyecto Water Monitoring System (WMS)."
+---
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
+  <img src="https://img.shields.io/badge/Módulo%20Wiki-11%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 11/11" />
+  <img src="https://img.shields.io/badge/Dominio-Anexos%20%26%20Referencias-6366f1?style=for-the-badge" alt="Dominio: Anexos & Referencias" />
+  <img src="https://img.shields.io/badge/Estado-Publicado-22c55e?style=for-the-badge" alt="Estado: Publicado" />
+</div>
+
+# Anexos y Referencias
+
+**Material de soporte, fuentes técnicas y recursos del proyecto.** Esta sección centraliza el código, las hojas de datos, la bibliografía y el glosario que respaldan el desarrollo del WMS.
+
+---
+
+## ◈ Repositorio y Código Fuente
+
+<CardGroup cols={2}>
+  <Card title="Repositorio del Proyecto" icon="github" href="[INSERTAR_AQUÍ_URL_REPOSITORIO]">
+    Código fuente completo del firmware ESP32, scripts del gateway y configuración.
+  </Card>
+  <Card title="Firmware ESP32" icon="microchip" href="[INSERTAR_AQUÍ_URL_FIRMWARE]">
+    Sketch del nodo de borde: adquisición por ISR, fusión 80/20 y cliente MQTT.
+  </Card>
+  <Card title="Gateway (Raspberry Pi)" icon="server" href="[INSERTAR_AQUÍ_URL_GATEWAY]">
+    Scripts de suscripción MQTT, persistencia SQLite y bridge hacia Ubidots.
+  </Card>
+  <Card title="Dashboard Ubidots" icon="cloud" href="[INSERTAR_AQUÍ_URL_UBIDOTS]">
+    Tablero global de telemetría y control remoto de alarmas.
+  </Card>
+</CardGroup>
+
+---
+
+## ⬡ Datasheets y Referencias Técnicas
+
+| Componente | Documento | Enlace |
+| --- | --- | --- |
+| **ESP32** | Datasheet del microcontrolador | `[INSERTAR_AQUÍ_URL]` |
+| **HC-SR04** | Sensor ultrasónico de distancia | `[INSERTAR_AQUÍ_URL]` |
+| **DHT11 / DHT22** | Sensor de temperatura y humedad | `[INSERTAR_AQUÍ_URL]` |
+| **BMP180** | Sensor barométrico de presión (I2C) | `[INSERTAR_AQUÍ_URL]` |
+| **Mosquitto** | Documentación del broker MQTT | `[INSERTAR_AQUÍ_URL]` |
+| **Ubidots** | Documentación de la plataforma IoT | `[INSERTAR_AQUÍ_URL]` |
+
+---
+
+## ▸ Bibliografía y Fuentes
+
+<Note>
+Reemplaza cada entrada por la cita completa en el formato exigido (APA / IEEE).
+</Note>
+
+- **CAR (Corporación Autónoma Regional):** reporte de municipios en riesgo hídrico. `[INSERTAR_AQUÍ_CITA]`
+- **IDEAM:** pronósticos climáticos y Fenómeno de El Niño 2026. `[INSERTAR_AQUÍ_CITA]`
+- **Documentación técnica de FreeRTOS / ESP-IDF.** `[INSERTAR_AQUÍ_CITA]`
+- **Especificación del protocolo MQTT (OASIS).** `[INSERTAR_AQUÍ_CITA]`
+- `[INSERTAR_AQUÍ_REFERENCIAS_ADICIONALES]`
+
+---
+
+## ⚡ Glosario Técnico
+
+| Término | Definición |
+| --- | --- |
+| **Edge Computing** | Procesamiento de datos en el nodo de borde, cerca de la fuente, en lugar de en la nube. |
+| **ISR** | Rutina de servicio de interrupción; ejecuta código ante un evento de hardware sin bloquear el flujo principal. |
+| **Broker MQTT** | Servidor intermediario que enruta mensajes entre publicadores y suscriptores (Mosquitto). |
+| **QoS** | Calidad de servicio: nivel de garantía de entrega de un mensaje MQTT. |
+| **WLAN Hotspot** | Red local inalámbrica que sirve el tablero in situ del ESP32. |
+| **Persistencia SQLite** | Almacenamiento local de la telemetría en el gateway para tolerancia a fallos. |
+| **ACK (Acknowledge)** | Confirmación de recepción; aquí, orden de silenciado remoto de la alarma. |
+| **Offline First** | Filosofía de diseño que garantiza operación continua aun sin conectividad a Internet. |
+| **Índice de Riesgo (Fusión)** | Métrica ponderada 80/20 que combina nivel físico y variables ambientales. |
+
+---
+
+## ◈ Licencia
+
+<Info>
+Proyecto académico desarrollado para el **Challenge #3 - Internet de las Cosas**, Facultad de Ingeniería, **Universidad de La Sabana (2026-2)**. Licencia: `[INSERTAR_AQUÍ_LICENCIA]`
+</Info>
+
+---
+
+<div style={{ display: "flex", justifyContent: "space-between", marginTop: "24px" }}>
+  <a href="/modulos/10-declaracion-ia">← 10. Declaración de IA</a>
+  <a href="/home">00. Inicio →</a>
+</div>

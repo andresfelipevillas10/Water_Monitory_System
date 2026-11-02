@@ -69,7 +69,35 @@
       },
       {
         "group": "Módulos",
-        "pages": []
+        "pages": [
+          "modulos/01-contexto-y-requisitos",
+          "modulos/02-equipo-y-roles",
+          "modulos/03-solucion-y-arquitectura",
+          "modulos/04-hardware",
+          "modulos/05-software-y-red",
+          "modulos/06-modulo-ia",
+          "modulos/07-pruebas-y-validacion",
+          "modulos/08-resultados-y-analisis",
+          "modulos/09-conclusiones",
+          "modulos/10-declaracion-ia",
+          "modulos/11-anexos"
+        ]
+      },
+      {
+        "group": "Modulos",
+        "pages": [
+          "modulos/01-contexto-y-requisitos",
+          "modulos/02-equipo-y-roles",
+          "modulos/03-solucion-y-arquitectura",
+          "modulos/04-hardware",
+          "modulos/05-software-y-red",
+          "modulos/06-modulo-ia",
+          "modulos/07-pruebas-y-validacion",
+          "modulos/08-resultados-y-analisis",
+          "modulos/09-conclusiones",
+          "modulos/10-declaracion-ia",
+          "modulos/11-anexos"
+        ]
       }
     ]
   }
