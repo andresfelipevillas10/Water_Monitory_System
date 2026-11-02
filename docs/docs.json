@@ -63,24 +63,11 @@
     "pages": [
       {
         "group": "Getting Started",
-        "pages": [
-          "introduction"
-        ]
+        "pages": []
       },
       {
         "group": "Módulos",
-        "pages": [
-          "modules/01-contexto",
-          "modules/02-equipo",
-          "modules/03-diseno",
-          "modules/04-hardware",
-          "modules/05-software",
-          "modules/06-validacion",
-          "modules/07-resultados",
-          "modules/08-retos",
-          "modules/09-ia",
-          "modules/10-referencias"
-        ]
+        "pages": []
       }
     ]
   }
