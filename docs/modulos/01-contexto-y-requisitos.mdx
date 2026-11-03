@@ -6,43 +6,51 @@ description: "Diagnóstico de la crisis hídrica en Sabana Centro, pregunta guí
 
 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
   <img src="https://img.shields.io/badge/Módulo%20Wiki-01%2F11-0ea5e9?style=for-the-badge" alt="Módulo Wiki 01/11" />
+
   <img src="https://img.shields.io/badge/Dominio-Problemática%20%26%20Requisitos-6366f1?style=for-the-badge" alt="Dominio: Problemática & Requisitos" />
+
   <img src="https://img.shields.io/badge/Estado-Especificación%20Cerrada-22c55e?style=for-the-badge" alt="Estado: Especificación Cerrada" />
+
   <img src="https://img.shields.io/badge/Revisión-v2.0%20Challenge%20%233-f59e0b?style=for-the-badge" alt="Revisión v2.0 Challenge #3" />
 </div>
 
-# Contexto y Requisitos ⬡ Vigilancia Hidrometeorológica Distribuida
-
-**Del prototipo aislado al ecosistema IoT de cuatro niveles.** Este módulo define el problema, formaliza la pregunta guía del reto y cierra la especificación de requisitos que gobierna el diseño del Water Monitoring System.
+**Del prototipo aislado al ecosistema IoT de cuatro niveles.** Este módulo diagnostica la crisis hídrica de la Sabana Centro, formaliza la pregunta guía oficial del reto y documenta la matriz de requisitos y restricciones que gobierna el diseño del Water Monitoring System.
 
 ---
 
 ## ◈ Contexto Ambiental: La Crisis Hídrica en Sabana Centro (2026)
 
-El Fenómeno de El Niño 2026 ha tensionado de forma severa el balance hídrico de la Sabana Centro de Cundinamarca. El aumento sostenido de la radiación solar acelera la evaporación en reservorios y cuencas abiertas, mientras la reducción de precipitaciones comprime la capacidad de recarga. La Corporación Autónoma Regional (CAR) reporta **20 municipios en riesgo extremo** de desabastecimiento, en línea con los pronósticos climáticos del IDEAM.
+El Fenómeno de El Niño 2026 ha tensionado de forma severa el balance hídrico de la Sabana Centro de Cundinamarca, situada a aproximadamente **2 600 m s. n. m.**, con presiones atmosféricas típicas de **740–755 hPa** e índices UV extremos superiores a **11**. Estas condiciones de altiplano aceleran la tasa de evaporación potencial de acuerdo con la ecuación de Penman-Monteith, que integra temperatura, radiación neta, humedad relativa y velocidad del viento como variables acopladas. La [Corporación Autónoma Regional (CAR)](https://www.car.gov.co) reporta **20 municipios en riesgo extremo** de desabastecimiento [1], en línea con los pronósticos climáticos del [IDEAM](https://www.ideam.gov.co) [2].
 
 El problema de fondo no es únicamente la escasez, sino la **ausencia de instrumentación densa y asequible** que permita observar el recurso en tiempo real. Sin telemetría distribuida, las autoridades locales toman decisiones de racionamiento sobre datos rezagados y agregados, incapaces de capturar la dinámica diaria de evaporación y nivel.
 
 <Warning>
-La combinación de alta radiación, baja humedad y presión atmosférica cambiante incrementa la tasa de evaporación potencial, un factor rara vez monitoreado de forma continua en la región.
+  **Por qué medir solo el nivel es insuficiente:** un descenso del nivel puede deberse a consumo programado o a una anomalía hidrometeorológica real (estrés hídrico severo). Solo la correlación multivariable — nivel + caudal + radiación + temperatura + humedad — permite distinguir ambos escenarios y evitar falsas alarmas en las alertas de racionamiento.
 </Warning>
 
 ### Impactos Críticos Territoriales
 
 | Categoría | Magnitud / Indicador | Repercusión en Infraestructura Hídrica |
 | --- | --- | --- |
-| **Cobertura en riesgo** | 20 municipios (reporte CAR) | Desabastecimiento proyectado y racionamiento reactivo |
-| **Radiación solar** | Picos sostenidos de irradiancia | Aceleración de la evaporación en reservorios abiertos |
-| **Déficit de precipitación** | Reducción de recarga en cuencas | Descenso progresivo de niveles útiles |
-| **Monitoreo actual** | Mediciones manuales y dispersas | Latencia alta en la detección de eventos críticos |
+| **Cobertura en riesgo** | 20 municipios [1] (reporte CAR 2026) | Desabastecimiento proyectado y racionamiento reactivo |
+| **Altitud y presión** | ≈ 2 600 m s. n. m. · 740–755 hPa [3] | Punto de ebullición reducido; evaporación potencial elevada respecto al nivel del mar |
+| **Radiación solar** | Índice UV > 11 (extremo) · irradiancia de altiplano [2] | Aceleración de la evaporación en reservorios abiertos (Penman-Monteith) |
+| **Déficit de precipitación** | Reducción de recarga en cuencas [2] | Descenso progresivo de niveles útiles |
+| **Monitoreo actual** | Mediciones manuales y dispersas [4] | Latencia alta en la detección de eventos críticos |
 | **Capacidad de reacción** | Datos agregados / rezagados | Decisiones de racionamiento sin soporte en tiempo real |
+
+<sub>Referencias: [1] CAR Cundinamarca — Boletín de riesgo hídrico 2026. [2] IDEAM — Pronóstico El Niño 2025–2026. [3] IGAC — Caracterización altimétrica Sabana Centro. [4] Diagnóstico de redes hidrometeorológicas regionales, pliego Challenge #3.</sub>
 
 ---
 
-## ⚡ La Pregunta Guía del Reto
+## ⚡ Pregunta Guía del Reto (Texto Oficial)
+
+<Note>
+  El texto a continuación es la **transcripción literal** de la pregunta guía del Challenge #3 tal como figura en el pliego oficial. El diseño completo de WMS responde a este enunciado.
+</Note>
 
 <Info>
-**Pregunta guía oficial (Challenge #3):** ¿Cómo diseñar un sistema IoT que mida y analice en tiempo real el nivel y/o caudal del agua, la evaporación potencial y variables meteorológicas (radiación solar, temperatura, humedad y presión atmosférica) en la región Sabana Centro (Cundinamarca), que combine múltiples señales ambientales críticas mediante lógica de fusión para generar alertas válidas y emita alertas tempranas "in situ" y en un "tablero de control" local y global a las autoridades locales de manera efectiva?
+  **¿Cómo diseñar un sistema IoT que mida y analice en tiempo real el nivel y/o caudal del agua, la evaporación potencial y variables meteorológicas (radiación solar, temperatura, humedad y presión atmosférica) en la región Sabana Centro (Cundinamarca), que combine múltiples señales ambientales críticas mediante lógica de fusión para generar alertas válidas y emita alertas tempranas "in situ" y en un "tablero de control" local y global a las autoridades locales de manera efectiva?**
 </Info>
 
 En su iteración anterior, el sistema era un **prototipo embebido aislado**: un ESP32 con servidor web local y sin conexión externa. La versión definitiva evoluciona hacia una **arquitectura de telemetría distribuida** que conserva la autonomía del borde pero añade respaldo local y procesamiento en la nube. El reto deja de ser "medir y mostrar" para convertirse en "medir, fusionar, respaldar, predecir y alertar" a través de cuatro niveles cooperativos.
@@ -51,12 +59,15 @@ En su iteración anterior, el sistema era un **prototipo embebido aislado**: un 
   <Card title="Periférico / Borde" icon="microchip">
     ESP32 + sensores HC-SR04, DHT22, BMP180, BH1750, alarmas in situ y servidor web local embebido.
   </Card>
+
   <Card title="Gateway de Borde" icon="server">
     Raspberry Pi con broker Mosquitto MQTT local y persistencia en base de datos SQLite.
   </Card>
+
   <Card title="Plataforma Global / Nube" icon="cloud">
     Ubidots vía MQTT con dashboards autenticados y desactivación remota de alarmas.
   </Card>
+
   <Card title="Inteligencia Artificial" icon="brain-circuit">
     Predicción hídrica, detección de anomalías y soporte a la toma de decisiones.
   </Card>
@@ -83,7 +94,7 @@ En su iteración anterior, el sistema era un **prototipo embebido aislado**: un 
 
 | Código | Atributo de calidad | Descripción | Métrica / Tolerancia |
 | --- | --- | --- | --- |
-| **RNF-01** | Rendimiento | Adquisición y publicación en tiempo casi real sin bloqueo de CPU. | Latencia borde → gateway < 2 s |
+| **RNF-01** | Rendimiento | Adquisición y publicación en tiempo casi real sin bloqueo de CPU. | Latencia borde → gateway \< 2 s |
 | **RNF-02** | Tolerancia a fallos / Offline First | Operación in situ y persistencia local ante caída de WAN/Internet. | 0 pérdida de datos durante desconexión |
 | **RNF-03** | Seguridad | Acceso restringido a dashboards y control de alarmas. | Autenticación obligatoria para usuarios autorizados |
 | **RNF-04** | Costo | Despliegue de bajo costo y reutilización de hardware previo. | Componentes comerciales de bajo costo (COTS) |
@@ -99,6 +110,7 @@ En su iteración anterior, el sistema era un **prototipo embebido aislado**: un 
 | **Económicas** | Presupuesto universitario acotado; prioridad al bajo costo de despliegue y a la reutilización de hardware. |
 | **Ambientales / Espaciales** | Operación en intemperie, cerca al agua, expuesto a humedad, radiación y variaciones térmicas. |
 | **Temporales** | Cronograma del Challenge #3 con fechas fijas de entrega y sustentación. |
+| **Escalabilidad** | Arquitectura debe permitir incorporar nuevos nodos y sensores sin rediseño estructural. |
 | **Regulatorias / Seguridad** | Acceso a datos y control de actuadores restringido exclusivamente a autoridades autorizadas. |
 
 ---
@@ -110,13 +122,13 @@ El HC-SR04 mide distancia a partir de la duración del pulso ECHO. La aproximaci
 WMS resuelve esto con **captura no bloqueante por interrupciones de hardware**: se registra una ISR sobre el pin ECHO que dispara en cada flanco `CHANGE` y marca el tiempo con `micros()`. La diferencia entre el flanco de subida y el de bajada entrega el ancho del pulso sin detener el bucle principal.
 
 <Tip>
-La ISR solo almacena marcas de tiempo; el cálculo de distancia se realiza fuera de la interrupción, manteniendo la rutina corta y segura.
+  La ISR solo almacena marcas de tiempo; el cálculo de distancia se realiza fuera de la interrupción, manteniendo la rutina corta y segura.
 </Tip>
 
 ### Justificación de la Redundancia
 
 <Warning>
-Si se pierde la conexión WAN/Internet, la nube deja de recibir datos, pero el sistema **no** debe quedar ciego ni mudo.
+  Si se pierde la conexión WAN/Internet, la nube deja de recibir datos, pero el sistema **no** debe quedar ciego ni mudo.
 </Warning>
 
 Ante una caída de red, el gateway mantiene la **persistencia en SQLite** y el nodo preserva su **operación in situ ininterrumpida**: sigue midiendo, mostrando en el tablero local y activando la alarma física. Al restablecerse la conectividad, la telemetría acumulada puede reenviarse a Ubidots, garantizando continuidad operativa bajo una filosofía Offline First.
