@@ -35,7 +35,7 @@
   "navigation": {
     "pages": [
       {
-        "group": "Inicio",
+        "group": "Getting Started",
         "pages": [
           "home"
         ]
