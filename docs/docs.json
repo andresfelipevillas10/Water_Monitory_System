@@ -1,7 +1,7 @@
 {
   "theme": "mint",
-  "name": "Water Monitoring System",
-  "description": "System Used With Monitoring activity of water in region of cundinamarca",
+  "name": "WMS — Challenge #3",
+  "description": "Sistema de Monitoreo Hidrometeorológico Distribuido para Sabana Centro (2026-2)",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -15,51 +15,24 @@
   "navbar": {
     "links": [
       {
-        "href": "mailto:support@mintlify.com",
-        "label": "Support"
+        "href": "https://github.com/MarshallGomez1103/IoT_Challenge2/wiki",
+        "label": "Wiki GitHub (Oficial)"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
-    }
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "label": "Dashboard Ubidots",
+      "href": "https://REEMPLAZAR_POR_URL_REAL_DE_TU_DASHBOARD"
     }
   },
   "contextual": {
     "options": [
       "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
+      "view"
     ],
     "display": "header"
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "icon": "book-open-cover",
-          "href": "https://mintlify.com/docs"
-        },
-        {
-          "anchor": "Blog",
-          "icon": "newspaper",
-          "href": "https://mintlify.com/blog"
-        }
-      ]
-    },
     "pages": [
       {
         "group": "Getting Started",
@@ -68,23 +41,7 @@
         ]
       },
       {
-        "group": "Módulos",
-        "pages": [
-          "modulos/01-contexto-y-requisitos",
-          "modulos/02-equipo-y-roles",
-          "modulos/03-solucion-y-arquitectura",
-          "modulos/04-hardware",
-          "modulos/05-software-y-red",
-          "modulos/06-modulo-ia",
-          "modulos/07-pruebas-y-validacion",
-          "modulos/08-resultados-y-analisis",
-          "modulos/09-conclusiones",
-          "modulos/10-declaracion-ia",
-          "modulos/11-anexos"
-        ]
-      },
-      {
-        "group": "Modulos",
+        "group": "Módulos de Arquitectura",
         "pages": [
           "modulos/01-contexto-y-requisitos",
           "modulos/02-equipo-y-roles",
