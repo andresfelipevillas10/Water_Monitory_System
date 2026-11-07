@@ -4,20 +4,16 @@ sidebarTitle: "Home"
 description: "Plataforma de monitoreo hidrometeorológico de bajo costo para la Sabana Centro de Cundinamarca: telemetría distribuida, fusión sensorial y soporte de decisiones por IA ante la crisis hídrica de 2026."
 ---
 
-<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
-  <img src="https://img.shields.io/badge/Estado-Prototipo%20Funcional-22c55e?style=for-the-badge" alt="Estado: Prototipo Funcional" />
+<div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "20px", marginBottom: "20px", alignItems: "center" }}>
+  <span style={{ backgroundColor: "#22c55e", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>✅ Estado: Prototipo Funcional</span>
+  <span style={{ backgroundColor: "#0ea5e9", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>🔧 Hardware: ESP32 & RPi 4</span>
+  <span style={{ backgroundColor: "#6366f1", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>📡 Red: MQTT & WLAN</span>
 
-  <img src="https://img.shields.io/badge/Hardware-ESP32%20%26%20RPi%204-0ea5e9?style=for-the-badge" alt="Hardware: ESP32 & RPi 4" />
+  <span style={{ backgroundColor: "#f59e0b", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>☁️ Nube: Ubidots</span>
 
-  <img src="https://img.shields.io/badge/Red-MQTT%20%26%20WLAN-6366f1?style=for-the-badge" alt="Red: MQTT & WLAN" />
-
-  <img src="https://img.shields.io/badge/Nube-Ubidots-f59e0b?style=for-the-badge" alt="Nube: Ubidots" />
-
-  <img src="https://img.shields.io/badge/Persistencia-SQLite-8b5cf6?style=for-the-badge" alt="Persistencia: SQLite" />
-
-  <img src="https://img.shields.io/badge/IA-Gemini%20API-ec4899?style=for-the-badge" alt="IA: Gemini API" />
-
-  <img src="https://img.shields.io/badge/Universidad-Sabana%202026--2-64748b?style=for-the-badge" alt="Universidad: Sabana 2026-2" />
+  <span style={{ backgroundColor: "#8b5cf6", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>🗄️ Persistencia: SQLite</span>
+  <span style={{ backgroundColor: "#ec4899", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>🧠 IA: Gemini API</span>
+  <span style={{ backgroundColor: "#64748b", color: "#fff", fontSize: "13px", fontWeight: "600", padding: "5px 12px", borderRadius: "6px", whiteSpace: "nowrap" }}>🎓 Universidad: Sabana 2026-2</span>
 </div>
 
 **El Fenómeno de El Niño 2026 amenaza el suministro hídrico de la Sabana Centro.** WMS responde con telemetría distribuida, fusión sensorial e inteligencia artificial para anticipar el estrés hídrico antes de que sea irreversible.
@@ -26,27 +22,13 @@ description: "Plataforma de monitoreo hidrometeorológico de bajo costo para la 
 
 ## ⬡ ¿Qué es WMS?
 
-El [Fenómeno de El Niño 2026](https://www.ideam.gov.co) ha intensificado la presión sobre las fuentes hídricas de la **Sabana Centro de Cundinamarca**, una región de más de 400 000 habitantes cuyo suministro depende de reservorios superficiales con escasa instrumentación. El [IDEAM](https://www.ideam.gov.co) y la [CAR Cundinamarca](https://www.car.gov.co) identifican esta brecha de observación como el principal obstáculo para la gestión preventiva del recurso.
+El [Fenómeno de El Niño 2026](https://www.ideam.gov.co) ha intensificado la presión sobre las fuentes hídricas de la **Sabana Centro de Cundinamarca**. Según el IDEAM [1] y la CAR Cundinamarca [2], **20 municipios de la región se encuentran en riesgo extremo** de desabastecimiento hídrico, con **16 escenarios críticos** identificados en el más reciente plan de contingencia regional \[3\][4]. El suministro de más de 400 000 habitantes depende de reservorios superficiales con escasa instrumentación, y esta brecha de observación es el principal obstáculo para la gestión preventiva del recurso.
 
 **WMS cierra esa brecha** con una red de nodos embebidos de bajo costo capaces de adquirir, fusionar y transmitir variables hidrometeorológicas críticas en tiempo casi real, sin depender de infraestructura costosa ni conectividad permanente.
 
-El sistema combina una **arquitectura dual borde/nube**: el nodo ESP32 ejecuta adquisición no bloqueante bajo [FreeRTOS](https://www.freertos.org) con ISRs, sirve un tablero local por WLAN y aplica fusión sensorial antes de publicar por MQTT. El gateway Raspberry Pi concentra la telemetría en un broker [Mosquitto](https://mosquitto.org), con persistencia en SQLite para garantizar operación continua ante cortes de conectividad.
+El sistema combina una **arquitectura dual borde/nube**: el nodo ESP32 ejecuta **adquisición concurrente no bloqueante mediante rutinas de interrupción (ISR)** — medición de nivel hídrico por HC-SR04, temperatura/humedad por DHT11, presión atmosférica por BMP180 y radiación solar relativa por LDR — sirviendo además un tablero local por WLAN antes de publicar por MQTT. El gateway Raspberry Pi concentra la telemetría en un broker [Mosquitto](https://mosquitto.org), la persiste en SQLite y la reenvía a [Ubidots](https://ubidots.com) como plataforma cloud; los actuadores locales (LCD, LED RGB y buzzer) notifican al operador in situ, y el apagado de alarma se ejecuta mediante comando ACK autenticado vía tópico MQTT restringido.
 
 Sobre esa base, WMS implementa una **arquitectura híbrida de inferencia en la nube**: el gateway orquesta consultas a la [API de Gemini](https://ai.google.dev) para análisis predictivo y soporte de racionamiento, transformando datos crudos del terreno en recomendaciones accionables. El modelo de lenguaje corre en servidores de Google; la lógica de orquestación, los prompts y la persistencia de resultados residen en el gateway local.
-
-<CardGroup cols={3}>
-  <Card title="Fusión Hidrometeorológica" icon="layer-group" href="/modulos/04-hardware">
-    Integración de nivel, caudal, radiación y clima en un único modelo de estado coherente, reduciendo ruido y falsos positivos.
-  </Card>
-
-  <Card title="Arquitectura Dual (Borde / Nube)" icon="network-wired" href="/modulos/03-solucion-y-arquitectura">
-    Procesamiento en el ESP32 y el gateway RPi, con redundancia SQLite que garantiza continuidad operativa ante caídas de red.
-  </Card>
-
-  <Card title="Inferencia en la Nube (Gemini API)" icon="brain-circuit" href="/modulos/06-modulo-ia">
-    El gateway orquesta consultas a Gemini API para anticipar escenarios de escasez y recomendar estrategias de racionamiento.
-  </Card>
-</CardGroup>
 
 ---
 
@@ -56,59 +38,61 @@ Sobre esa base, WMS implementa una **arquitectura híbrida de inferencia en la n
   Ficha técnica del prototipo funcional. Ver especificación completa en [Hardware y Sensores](/modulos/04-hardware) y [Software y Red](/modulos/05-software-y-red).
 </Info>
 
-<Card title="🔬 Sensores e Interfaces Físicas" icon="microchip" href="/modulos/04-hardware">
-  | Variable | Sensor | Bus / Interfaz |
-  | --- | --- | --- |
-  | Nivel de agua | HC-SR04 (ultrasónico) | GPIO — trigger/echo |
-  | Caudal | YF-S201 (caudalímetro) | Interrupción externa (pulsos) |
-  | Temperatura / Humedad | DHT22 | OneWire / Single-bus |
-  | Radiación solar | LDR (fotorresistencia) | ADC 12 bits (GPIO34) |
-  | Presión atmosférica | BMP280 | I²C (SDA/SCL) |
-  | Evaporación potencial | Calculada en gateway | Método Hargreaves (T + Rad) |
-</Card>
-
-<Card title="🖥️ Cómputo y Conectividad" icon="server" href="/modulos/03-solucion-y-arquitectura">
-  | Componente | Detalle |
-  | --- | --- |
-  | Nodo embebido | ESP32 · FreeRTOS · ISRs · servidor HTTP local |
-  | Gateway local | Raspberry Pi 4 · Mosquitto broker · SQLite |
-  | Protocolo campo → gateway | MQTT bidireccional (TCP/IP · WLAN) |
-  | Protocolo gateway → nube | MQTT → [Ubidots](https://ubidots.com) (token auth) |
-  | Latencia borde → gateway | \< 2 s |
-  | Latencia gateway → nube | \< 10 s |
-  | Redundancia | SQLite local + reenvío automático en reconexión |
-</Card>
-
-<Card title="🔒 Seguridad y Control de Acceso" icon="lock" href="/modulos/05-software-y-red">
-  | Capa | Mecanismo |
-  | --- | --- |
-  | Tablero local (ESP32) | HTTP Basic Auth sobre servidor embebido |
-  | Gateway (Mosquitto) | Usuario + contraseña · ACL por tópico |
-  | Tablero global (Ubidots) | API Token + RBAC por dashboard |
-  | Actuadores remotos | Comando ACK autenticado vía tópico MQTT restringido |
-</Card>
-
-<Card title="🧠 Inteligencia y Actuación" icon="brain-circuit" href="/modulos/06-modulo-ia">
-  | Función | Implementación |
-  | --- | --- |
-  | Modelo de IA | [Gemini API](https://ai.google.dev) — inferencia en nube |
-  | Orquestación | Gateway RPi · Python · prompts auditables |
-  | Análisis | Detección de anomalías · soporte de racionamiento |
-  | Actuadores | Alarma sonora/lumínica · pantalla in situ · ACK remoto |
-</Card>
+<Tabs>
+  <Tab title="Sensórica">
+    | Variable | Sensor | Bus / Interfaz |
+    | --- | --- | --- |
+    | Nivel de agua | HC-SR04 (ultrasónico) | GPIO — trigger/echo + ISR de eco |
+    | Temperatura / Humedad | DHT11 | Single-bus (OneWire) |
+    | Presión atmosférica | BMP180 | I²C (SDA/SCL) |
+    | Radiación solar relativa | LDR (fotorresistencia) | ADC 12 bits (GPIO34) |
+    | Evaporación potencial | Variable derivada — calculada en gateway | Método Hargreaves (T + Rad_LDR) |
+  </Tab>
+  <Tab title="Cómputo y Red">
+    | Componente | Detalle |
+    | --- | --- |
+    | Nodo embebido | ESP32 · Superloop no bloqueante + ISRs · servidor HTTP local |
+    | Gateway local | Raspberry Pi 4 · Mosquitto broker · SQLite |
+    | Protocolo campo → gateway | MQTT bidireccional (TCP/IP · WLAN) |
+    | Protocolo gateway → nube | MQTT → [Ubidots](https://ubidots.com) (token auth) |
+    | Latencia borde → gateway | \< 2 s |
+    | Latencia gateway → nube | \< 10 s |
+    | Redundancia | SQLite local + reenvío automático en reconexión |
+  </Tab>
+  <Tab title="Seguridad">
+    | Capa | Mecanismo |
+    | --- | --- |
+    | Tablero local (ESP32) | HTTP Basic Auth sobre servidor embebido |
+    | Gateway (Mosquitto) | Usuario + contraseña · ACL por tópico |
+    | Tablero global (Ubidots) | API Token + RBAC por dashboard |
+    | Actuadores remotos | Comando ACK autenticado vía tópico MQTT restringido |
+  </Tab>
+  <Tab title="IA y Actuación">
+    | Función | Implementación |
+    | --- | --- |
+    | Modelo de IA | [Gemini API](https://ai.google.dev) — inferencia en nube |
+    | Orquestación | Gateway RPi · Python · prompts auditables |
+    | Análisis | Detección de anomalías · soporte de racionamiento |
+    | Actuadores in situ | LCD · LED RGB · buzzer |
+    | Control remoto | ACK/SILENCE autenticado vía tópico MQTT restringido |
+  </Tab>
+</Tabs>
 
 ---
 
 ## ◈ Centro de Control & Demostración en Video
 
-<iframe width="100%" height="420" src="https://www.youtube.com/embed/sDJ2lPGWiRw" title="WMS — Video de Validación" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: "12px" }} />
+<Warning>
+  **Pendiente antes del lunes 9 de noviembre:** Reemplazar el iframe con el video final del Challenge 3 (máx. 5 min, cámara encendida, con David Jasub Sastre, Elioth Thomas Gómez y Andrés Suárez). El archivo también debe subirse directamente en la actividad de MS Teams para que se reproduzca sin descarga.
+</Warning>
+
+<iframe width="100%" height="420" src="https://www.youtube.com/embed/sDJ2lPGWiRw" title="WMS — Video de Validación Challenge 3" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius: "12px" }} />
 
 <CardGroup cols={2}>
-  <Card title="Tablero Local (WLAN)" icon="house-signal" href="[INSERTAR_AQUÍ_IP_LOCAL]">
-    Dashboard servido por el ESP32 en la red local. Acceso restringido por **HTTP Basic Auth**.
+  <Card title="Tablero Local (WLAN)" icon="house-signal" href="http://wms-esp32.local">
+    Dashboard servido por el ESP32 **solo dentro de la red local de la sustentación**. No es accesible desde fuera de esa WLAN. Conéctate a la misma red WiFi del prototipo antes de abrir el enlace.
 
-    **Credenciales de demostración (docente):**
-
+    - Dirección: `http://wms-esp32.local` (o la IP asignada por DHCP)
     - Usuario: `admin`
     - Contraseña: `[INSERTAR_PASSWORD_LOCAL]`
 
@@ -116,14 +100,14 @@ Sobre esa base, WMS implementa una **arquitectura híbrida de inferencia en la n
   </Card>
 
   <Card title="Tablero Global (Ubidots Cloud)" icon="cloud" href="[INSERTAR_AQUÍ_URL_UBIDOTS]">
-    Panel de telemetría en la nube con históricos, alertas y control remoto de actuadores vía tópico MQTT restringido.
+    Panel de telemetría en la nube con históricos, alertas y control remoto de actuadores vía tópico MQTT `wms/cmd/actuator/ack`.
 
     **Acceso de invitado (docente):**
 
     - Enlace de dashboard: `[INSERTAR_URL_UBIDOTS_GUEST]`
     - Token de lectura: `[INSERTAR_TOKEN_GUEST]`
 
-    El control de desactivación de alarmas se ejecuta publicando en el tópico `/wms/actuator/ack` con credenciales autorizadas.
+    El apagado de alarma se ejecuta publicando en el tópico `wms/cmd/actuator/ack` con credenciales autorizadas (sin barra inicial, conforme a la ACL de Mosquitto `wms/cmd/#`).
   </Card>
 </CardGroup>
 
@@ -131,28 +115,63 @@ Sobre esa base, WMS implementa una **arquitectura híbrida de inferencia en la n
 
 ## ⬡ Mapa de Navegación de la Wiki
 
-| # | Módulo | Descripción técnica |
-| --- | --- | --- |
-| 01 | [Contexto y Requisitos](/modulos/01-contexto-y-requisitos) | Diagnóstico de la crisis hídrica, pregunta guía, restricciones económicas, regulatorias, de espacio, temporales y de escalabilidad, estándares de ingeniería aplicados y modelo de negocio. |
-| 02 | [Equipo y Roles](/modulos/02-equipo-y-roles) | Perfiles técnicos, matriz RACI y metodología de trabajo del equipo. |
-| 03 | [Solución y Arquitectura](/modulos/03-solucion-y-arquitectura) | Topología Edge-to-Cloud de 4 capas, fusión 80/20, escalabilidad, restricciones de diseño y justificación de estándares de ingeniería. |
-| 04 | [Hardware y Sensores](/modulos/04-hardware) | BOM, ruteo de pines, protección eléctrica y calibración del nodo. |
-| 05 | [Software y Red (MQTT)](/modulos/05-software-y-red) | Firmware ESP32, servidor web embebido local (HTTP/WLAN), tópicos MQTT, gateway RPi, SQLite y Ubidots. |
-| 06 | [Módulo de IA](/modulos/06-modulo-ia) | Pipeline de datos, prompts, detección de anomalías y soporte a la decisión via Gemini API. |
-| 07 | [Pruebas y Validación](/modulos/07-pruebas-y-validacion) | Banco de pruebas, suite QA y autoevaluación crítica del protocolo. |
-| 08 | [Resultados y Video](/modulos/08-resultados-y-analisis) | Análisis de telemetría, KPIs y video demostrativo de validación. |
-| 09 | [Conclusiones y Retos](/modulos/09-conclusiones) | Conclusiones, troubleshooting y roadmap de escalabilidad industrial. |
-| 10 | [Declaración de IA](/modulos/10-declaracion-ia) | Declaración ética y metodológica del uso de IA, prompts auditables y métodos de validación (requerido por pliego para evitar sanción de no evaluación). |
-| 11 | [Anexos y Referencias](/modulos/11-anexos) | Repositorio, datasheets, bibliografía, glosario y licencia. |
+<CardGroup cols={2}>
+  <Card title="01 · Contexto y Requisitos" icon="map" href="/modulos/01-contexto-y-requisitos">
+    Diagnóstico de la crisis hídrica, pregunta guía y justificación del proyecto.
+  </Card>
+
+  <Card title="02 · Equipo y Roles" icon="users" href="/modulos/02-equipo-y-roles">
+    Perfiles técnicos, matriz RACI y metodología de trabajo del equipo.
+  </Card>
+
+  <Card title="03 · Solución y Arquitectura" icon="network-wired" href="/modulos/03-solucion-y-arquitectura">
+    Topología Edge-to-Cloud, restricciones de diseño, estándares de ingeniería y modelo de negocio.
+  </Card>
+
+  <Card title="04 · Hardware y Sensores" icon="microchip" href="/modulos/04-hardware">
+    BOM, ruteo de pines, protección eléctrica y calibración del nodo.
+  </Card>
+
+  <Card title="05 · Software y Red (MQTT)" icon="code" href="/modulos/05-software-y-red">
+    Firmware ESP32, servidor web embebido, tópicos MQTT, gateway RPi, SQLite y Ubidots.
+  </Card>
+
+  <Card title="06 · Módulo de IA" icon="brain-circuit" href="/modulos/06-modulo-ia">
+    Pipeline de datos, prompts auditables, detección de anomalías y soporte a la decisión vía Gemini API.
+  </Card>
+
+  <Card title="07 · Pruebas y Validación" icon="flask-conical" href="/modulos/07-pruebas-y-validacion">
+    Banco de pruebas, suite QA y autoevaluación crítica del protocolo.
+  </Card>
+
+  <Card title="08 · Resultados y Video" icon="chart-line" href="/modulos/08-resultados-y-analisis">
+    Análisis de telemetría, KPIs y video demostrativo de validación.
+  </Card>
+
+  <Card title="09 · Conclusiones y Retos" icon="flag" href="/modulos/09-conclusiones">
+    Conclusiones, troubleshooting y roadmap de escalabilidad industrial.
+  </Card>
+
+  <Card title="10 · Declaración de IA" icon="shield-check" href="/modulos/10-declaracion-ia">
+    Declaración ética y metodológica del uso de IA con prompts auditables (requerido por pliego).
+  </Card>
+
+  <Card title="11 · Anexos y Referencias" icon="book-open" href="/modulos/11-anexos">
+    Repositorio, datasheets, bibliografía, glosario y licencia.
+  </Card>
+</CardGroup>
 
 ---
 
 ## ▸ Metadatos del Proyecto
 
-| Campo | Detalle |
-| --- | --- |
-| **Fecha de entrega (wiki + ZIP en Teams)** | `9 de noviembre de 2026` |
-| **Fecha de sustentación** | `10 de noviembre de 2026 · 1:00 pm / 1:30 pm (presencial)` |
-| **Equipo de desarrollo** | `Andres Suarez, Jasub Sastre, Thomas Gomez` |
-| **Docente** | `@juanmalk` |
-| **Programa** | Universidad de La Sabana · Periodo 2026-2 |
+<Accordion title="Ficha del proyecto (equipo, fechas, docente)">
+  | Campo | Detalle |
+  | --- | --- |
+  | **Fecha de entrega (wiki + ZIP en Teams)** | `9 de noviembre de 2026` |
+  | **Fecha de sustentación** | `10 de noviembre de 2026 · 1:00 pm / 1:30 pm (presencial)` |
+  | **Equipo de desarrollo** | `Andres Suarez, Jasub Sastre, Thomas Gomez` |
+  | **Docente** | `@juanmalk` |
+  | **Programa** | Universidad de La Sabana · Periodo 2026-2 |
+  | **Wiki espejo (GitHub)** | `[INSERTAR_URL_GITHUB_WIKI]` |
+</Accordion>
